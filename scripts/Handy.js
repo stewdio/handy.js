@@ -57,7 +57,7 @@ const Handy = {
 
 	//  And now on to the boring constants...
 
-	REVISION: 1,
+	REVISION: 2,
 
 
 	//  The following list of joint names mirrors the constants list
