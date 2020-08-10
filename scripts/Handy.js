@@ -327,7 +327,7 @@ Object.assign( Handy.protos, {
 	},
 	digitIsContracted: function( digitName ){
 
-		return this.digitAngle( digitName ) > 150
+		return this.digitAngle( digitName ) > 110//  150
 
 		// return this.distanceBetweenJoints(
 
