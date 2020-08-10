@@ -283,7 +283,7 @@ Object.assign( Handy.protos, {
 		}
 		else return NaN
 	},
-	fingerAngle: function( fingerName, loggit ){
+	digitAngle: function( fingerName ){
 
 		fingerName = fingerName.toUpperCase()
 
@@ -311,54 +311,31 @@ Object.assign( Handy.protos, {
 
 	digitIsExtended: function( digitName ){
 
-		const threshold = 
-			digitName.toUpperCase() === 'THUMB' ?
-			0.03 :
-			0.06
+		return this.digitAngle( digitName ) < 45
 
-		return this.distanceBetweenJoints(
+		// const threshold = 
+		// 	digitName.toUpperCase() === 'THUMB' ?
+		// 	0.03 :
+		// 	0.06
 
-			digitName +' phalanx proximal',
-			digitName +' phalanx tip'
+		// return this.distanceBetweenJoints(
+
+		// 	digitName +' phalanx proximal',
+		// 	digitName +' phalanx tip'
 		
-		) >= threshold
+		// ) >= threshold
 	},
 	digitIsContracted: function( digitName ){
 
-		return this.distanceBetweenJoints(
+		return this.digitAngle( digitName ) > 150
 
-			digitName +' phalanx proximal',
-			digitName +' phalanx tip'
+		// return this.distanceBetweenJoints(
+
+		// 	digitName +' phalanx proximal',
+		// 	digitName +' phalanx tip'
 		
-		) < 0.05
+		// ) < 0.05
 	},
-/*
-
-
-for FINGERS:
-
-less than 45˚ = extended
-
-more than 150˚ = contracted
-
-for THUMBS:
-
-???
-
-
-**** should we switch from FINGER to DIGIT to mean fingers + thumbs???
-
-i should make a SurfaceText demo
-that displays the angles of each finger on the fingers
-and changes finger materials when contracted vs extended
-so it’s easy to guage how you want to define a fist shape
-also should show a list of what shapes are currently TRUE
-so a lot of surface text action here.
-
-
-
-*/
-
 
 
 
@@ -367,7 +344,7 @@ so a lot of surface text action here.
 	//  what values you may want to use
 	//  in your detection functions.
 
-	reportDigits: function( loggit ){
+	reportDigits: function(){
 
 		const scope = this
 		Handy.digitNames
@@ -379,14 +356,14 @@ so a lot of surface text action here.
 				digitName +' phalanx proximal',
 				digitName +' phalanx tip'
 			),
-			fingerAngle = scope.fingerAngle( digitName, loggit )
+			digitAngle = scope.digitAngle( digitName )
 
 			console.log( 
 
 				scope.handedness, 
 				digitName, 
 				'angle (˚)',
-				Math.round( fingerAngle ),
+				Math.round( digitAngle ),
 				'distance (cm)',
 				Math.round( distance * 1000 ) / 10,
 				'isExtended?', 
