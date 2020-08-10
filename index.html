@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Handy.js</title>
+		<meta charset="utf-8">
+		<meta name="viewport"    content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="Handy makes defining and using custom hand shapes in WebXR a snap.">
+		<meta name="author"      content="Stewart Smith">
+		<meta name="copyright"   content="Stewart Smith 2020">
+
+		<meta name="twitter:card"         content="summary_large_image">
+		<meta name="twitter:site"         content="@stew_rtsmith">
+		<meta name="twitter:creator"      content="@stew_rtsmith">
+		<meta name="twitter:title"        content="Handy.js">
+		<meta name="twitter:description"  content="Handy makes defining and using custom hand shapes in WebXR a snap.">
+		<meta name="twitter:image"        content="http://stewartsmith.io/handy/media/vr-hands.jpg">
+		<meta name="twitter:url"          content="http://stewartsmith.io/handy/">
+		
+		<meta property="og:type"          content="website">
+		<meta property="og:title"         content="Handy.js">
+		<meta property="og:description"   content="Handy makes defining and using custom hand shapes in WebXR a snap.">
+		<meta property="og:image"         content="http://stewartsmith.io/handy/media/vr-hands.jpg">
+		<meta property="og:url"           content="http://stewartsmith.io/handy/">
+
+		<link type="text/css" rel="stylesheet" href="styles/base.css">
+		<script type="module" src="scripts/main.js"></script>
+	</head>
+	<body>
+		<div id="three"></div>
+		<section>
+			👋 Ahoy.<br>
+			<br>
+			Handy makes defining and using custom hand shapes in WebXR a snap.
+			Just name your hand shape (eg. “pinch”)
+			and write a function that defines the shape.
+			Handy will create and update convenience booleans
+			that you can query in your update loop,
+			and it will create custom events that you can listen for.<br>
+			<br>
+			<strong>Demo</strong>.
+			Make your hand into a “finger gun” shape
+			then tap your thumb down 
+			onto your middle finger
+			to shoot lasers from your hand.
+			Make a fist to cycle through different hand model styles.
+			“Devil horns” toggle the hand-specific colors.<br>
+			<br>
+			<strong>Requirements</strong>.
+			This code has been designed for the Oculus Quest.
+			You’ll need to follow these steps before you can 
+			experience the demo yourself:
+			<br>
+			<ol>
+				<li>
+					In Oculus <strong>settings</strong>
+					enable automatic switching between regular hand controlles
+					and bare hands.
+				</li>
+				<li>
+					In the Oculus <strong>browser</strong>
+					visit <a href="chrome://flags/" taget="_blank">chrome://flags/</a>.
+				</li>
+				<li>
+					Within the flags page, <strong>enable</strong> 
+					the “WebXR experiences with joints tracking” flag
+					(<code>#webxr-hands</code>).
+				</li>
+				<li>
+					Within the flags page, <strong>disable</strong> 
+					the “WebXR experiences with hands tracking” flag
+					(<code>#webxr-hands-tracking</code>).
+					Yes. <em>Disable</em> it.
+					We’re at that funny early stage of the technology where 
+					things are not always what they seem.
+				</li>
+				<li>
+					Restart the Oculus browser
+					and visit this site again.
+					Use your hand controllers 
+					to click the “Enter VR” button.
+					Once you are inside the experience put your controllers down,
+					hold your hands out in front of you 
+					so that the headset can see them,
+					and enjoy! 😄
+				</li>
+			</ol>
+			<br>
+			<br>
+			I’m <a href="https://stewartsmith.io" target="_blank">Stewart</a>.
+			This demo illustrates the use of the
+			<a href="https://github.com/immersive-web/webxr-hand-input/blob/master/explainer.md" target="_blank">WebXR device hand input API</a>
+			for hand and finger tracking,
+			as tested on an
+			<a href="https://www.oculus.com/quest/" target="_blank">Oculus Quest</a>
+			stand-alone headset.
+			This experience is live at 
+			<a href="https://stewartsmith.io/handy/">https://stewartsmith.io/handy/</a>.
+			This code is open-source and available at
+			<a href="https://github.com/stewdio/handy.js" target="_blank">https://github.com/stewdio/handy.js</a>.
+			<br>
+			<br>
+			<br>
+		</section>
+	</body>
+</html>

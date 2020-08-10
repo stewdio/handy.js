@@ -1,0 +1,73 @@
+
+/*  Copyright © 2020 Stewart Smith. See LICENSE for details.  */
+
+
+
+
+* {
+
+	box-sizing: border-box;
+}
+html, body {
+
+	width:  100%;
+	height: 100%;
+}
+html, body, canvas {
+
+	margin:  0;
+	outline: none;
+	border:  none;
+	padding: 0;
+}
+body {
+
+	background-color: #222;
+	color: #FFF;
+	font-family: 
+		'SF Pro Text', 
+		 system-ui, 
+		-apple-system, 
+		'Helvetica Neue', 
+		'Helvetica', 
+		'Arial', 
+		 sans-serif;
+	overflow: hidden;
+}
+#three {
+
+	width:  100%;
+	height: 100%;
+}
+section {
+
+	position: absolute;
+	top:      0;
+	left:    50%;
+	width:   50%;
+	height: 100%;
+	background-color: hsla( 0, 0%, 0%, 0.8 );
+	padding: 60px 30px 180px 40px;
+	font-size:   20px;
+	line-height: 30px;
+	font-weight: 300;
+	overflow: auto;
+	box-shadow: 0px 0px 12px hsla( 0, 0%, 0%, 0.5 );
+}
+code {
+
+	background-color: hsla( 95, 60%, 50%, 0.2 );
+	padding: 2px 4px;
+	color: hsl( 95, 60%, 50% );
+}
+section li + li {
+
+	margin-top: 20px;
+}
+a {
+
+	color: hsl( 200, 60%, 50% );
+}
+
+
+
