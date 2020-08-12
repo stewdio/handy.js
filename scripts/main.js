@@ -602,7 +602,7 @@ function loop( timeNow, frame ){
 
 	;[ hands.left, hands.right ].forEach( function( hand ){
 
-		hand.checkShapes()
+		hand.update()
 		if( hand.handedness === undefined ) hand.checkHandedness()
 		if( hand.isPointShape ){
 
@@ -665,23 +665,5 @@ window.addEventListener( 'DOMContentLoaded', function(){
 	setupContent()
 })
 
-
-
-
-
-
-window.THREE = THREE
-var a = new THREE.Quaternion( 1, 0, 0, 0 )
-var b = new THREE.Quaternion( 0, 0, 1, 0 )
-
-console.log( 'a.angleTo( b )', a.angleTo( b ))
-
-
-window.addEventListener( 'keydown', function(){
-
-
-	// console.log( 'camera.quaternion', camera.quaternion )
-	console.log( 'camera.quaternion.angleTo( scene.quaternion )', camera.quaternion.angleTo( scene.quaternion ))
-})
 
 

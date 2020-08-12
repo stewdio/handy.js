@@ -3,17 +3,18 @@
 
 
 import * as THREE from './third-party/Three/three.module.js'
+import { SurfaceText } from './third-party/SpaceRocks/SurfaceText.js'
 
 
 
 
 //  👋 Introducing Handy.js — 
 //  a tiny shim to make defining and using hand shapes in WebXR easy! 
-//  Built with Three.js and tested on the Oculus Quest. 
+//  Built with Three.js and tested on the Oculus Quest.
 //  Handy creates boolean flags and events for your defined hand shapes.
 
 //  You’ll need to add to the Handy.shapeNames Array 
-//  and create a corresponding checkIsMyShape() function.
+//  and create a corresponding “checkIsMyShape()” function.
 //  Have a look at checkIsPointShape() as an example.
 //  See how easy this is?!
 
@@ -36,28 +37,11 @@ const Handy = {
 	throttleDuration: 0.1,
 
 
-	//  Add the names of your custom shapes to this list
-	//  and don’t forget to write check functions for your
-	//  custom hand shapes down below!
-	//  eg. ‘Pinch’ in this list requires a 
-	// ‘checkIsPinchShape’ function below.
-	
-	shapeNames: [
+	//  What revision of Handy is this?
+	//  I don’t have strict critera for requiring a version bump
+	//  but when something biggish changes I’ll bump this number.
 
-		'Devil',
-		'Dirty',
-		'Fist',
-		'L',
-		'Pinch',
-		'Point'
-	],
-
-
-
-
-	//  And now on to the boring constants...
-
-	REVISION: 2,
+	REVISION: 3,
 
 
 	//  The following list of joint names mirrors the constants list
@@ -113,6 +97,11 @@ const Handy = {
 		'LITTLE_PHALANX_DISTAL',      //  23
 		'LITTLE_PHALANX_TIP'          //  24
 	],
+
+
+	//  These are not part of the XRHand spec
+	//  but come in very handy.
+
 	digitNames: [
 
 		'THUMB',
@@ -128,6 +117,12 @@ const Handy = {
 		'RING',
 		'LITTLE'
 	],
+
+
+	//  We’ll add to this list of shape names later
+	//  by using the Handy.defineShape() function.
+	
+	shapeNames: [],
 
 
 	//  JavaScript doesn’t need classes.
@@ -146,13 +141,102 @@ const Handy = {
 	protos: {},
 
 
+	//  We’re going to keep a reference
+	//  to every object that we “make handy”
+	//  so we can iterate through them later
+	//  if necessary. 
+
+	handies: [],
+
+
+	//  Did you add a shape name to the Handy.shapeNames Array?
+	//  If so, this will automatically create boolean flags for it.
+	//  eg. We have a shape name called ‘Pinch’
+	//  and this will create the flags ‘isPinchShape’
+	//  as well as ‘wasPinchShape’.
+	//  This allows us to check for hand shapes once
+	//  and then rely on the booleans for greater efficiency.
+
+	addBooleanFlagsForHandShapes: function( obj ){
+
+		Handy.shapeNames.forEach( function( shapeName ){
+
+			if( obj[  'is'+ shapeName ] === undefined ) obj[  'is'+ shapeName ] = false
+			if( obj[ 'was'+ shapeName ] === undefined ) obj[ 'was'+ shapeName ] = false
+		})
+	},
+
+
+	//  And now we can just glob on all of the methods
+	//  that will be defined in the Handy.protos{} object.
+	//  This isn’t making copies of these methods,
+	//  it’s making references to them. More efficient :)
+	//  Yay for prototypal inheritance!
+	//  https://en.wikipedia.org/wiki/Prototype-based_programming
+
+	addCheckMethodsForHandShapes: function( obj ){
+
+		Object.entries( Handy.protos )
+		.forEach( function( entry ){
+
+			if( obj[ entry[ 0 ]] === undefined ) obj[ entry[ 0 ]] = entry[ 1 ]
+		})
+	},
+
+
+	//  We must define our hand shapes BEFORE
+	//  we use makeHandy() on an object
+	//  otherwise the booleans and events for it
+	//  won’t get attached to the handy-fied object.
+
+	defineHandShape: function( name, checkFunction ){
+
+
+		//  Expecting a string
+		//  that optionally begins with a capital letter
+		//  and optionally has remaining loewrcase letters.
+		//  eg. “Pinch”
+
+		Handy.shapeNames.push( name )
+
+
+		//  Expecting a function to glob onto the Handy protos{}.
+
+		Handy.protos[ 'checkIs'+ name +'Shape' ] = checkFunction
+
+
+		//  If we’re adding new hand shape definitions
+		//  after some objects have already been “made handy”
+		//  then we should ensure those handy objects
+		//  also inherit the proper flags and methods.
+
+		Handy.handies.forEach( Handy.addBooleanFlagsForHandShapes )
+		Handy.handies.forEach( Handy.addCheckMethodsForHandShapes )
+	},
+
+	
+	//  Expects a list of arguments whose length is evenly divisible by 2;
+	//  Pairs of arguments such that the first is a shape definition name
+	//  and the second is a function to check for that shape definition.
+
+	defineHandShapes: function(){
+
+		for( let i = 0; i < arguments.length - 1; i += 2 ){
+
+			Handy.defineHandShape( arguments[ i ], arguments[ i + 1 ])
+		}
+	},
+
+
+
+
 	//  Handy.makeHandy() expects an instance of THREE.Object3D,
 	//  or anything that inherits from THREE.Object3D,
 	//  and then injects additional functionality into that object.
 	//  The intended use is with THREE’s XRHand model like so:
 	//
 	//    hand1 = renderer.xr.getHand( 0 )
-	//	  Handy.makeHandy( hand1 )//  This is the magic line.
+	//    Handy.makeHandy( hand1 )//  This is the magic line.
 	//
 	//  Now ‘hand1’ is handy! It’s that easy!
 	//  Just remember to call hand.checkShapes() within your update loop.
@@ -168,32 +252,58 @@ const Handy = {
 		obj.lastThrottleTimestamp = 0
 
 
-		//  Did you add a shape name to the Handy.shapeNames Array?
-		//  If so, this will automatically create boolean flags for it.
-		//  eg. We have a shape name called ‘Pinch’
-		//  and this will create the flags ‘isPinchShape’
-		//  as well as ‘wasPinchShape’.
-		//  This allows us to check for hand shapes once
-		//  and then rely on the booleans for greater efficiency.
+		Handy.addBooleanFlagsForHandShapes( obj )
+		Handy.addCheckMethodsForHandShapes( obj )
 
-		Handy.shapeNames.forEach( function( shapeName ){
 
-			obj[  'is'+ shapeName ] =
-			obj[ 'was'+ shapeName ] = false
+		//  We need to find the THREE camera used for this scene
+		//  in order to have our data display frames 
+		//  always lookAt() the camera.
+		//  In the future we might need this to be more robust
+		//  or just pass in the intended camera via update().
+
+		const scene = obj.parent
+		obj.camera = scene.children.find( function( child ){
+
+			return child.type = 'PerspectiveCamera'
 		})
 
 
-		//  And now we can just glob on all of the methods
-		//  that will be defined in the Handy.protos{} object.
-		//  This isn’t making copies of these methods,
-		//  it’s making references to them. More efficient :)
-		//  Yay for prototypal inheritance!
-		//  https://en.wikipedia.org/wiki/Prototype-based_programming
+		//  Let’s create a means for displaying 
+		//  hand and finger data right in VR!
+		//  SurfaceText returns a THREE.Mesh
+		//  with additional methods like print().
 
-		Object.entries( Handy.protos )
-		.forEach( function( entry ){
+		obj.displaysAreVisible = true
+		Handy.digitNames
+		.forEach( function( digitName ){
 
-			obj[ entry[ 0 ]] = entry[ 1 ]
+			const 
+			jointName = digitName +'_PHALANX_INTERMEDIATE',
+			displayFrame = new SurfaceText({
+
+				text: digitName,
+				canvas: {
+
+					width:  256,
+					height: 128
+				},
+				virtual: {
+
+					width:  0.10,
+					height: 0.05
+				},
+				style: {
+
+					fontFamily: 'bold monospace',
+					fontSize:   '30px',
+					textAlign:  'left',
+					fillStyle:  '#00DDFF'
+				}
+			})
+			
+			displayFrame.name = jointName +'_DISPLAY'
+			obj.add( displayFrame )
 		})
 	}
 }
@@ -203,7 +313,7 @@ const Handy = {
 //  to append constants directly onto the Handy{} object like so:
 //  Handy.INDEX_PHALANX_INTERMEDIATE === 7.
 //  This exactly mirrors XRHand:
-//  Handy.INDEX_PHALANX_INTERMEDIATE === Handy.INDEX_PHALANX_INTERMEDIATE.
+//  Handy.INDEX_PHALANX_INTERMEDIATE === XRHand.INDEX_PHALANX_INTERMEDIATE.
 
 Handy.jointNames.forEach( function( name, i ){
 
@@ -243,11 +353,11 @@ Object.assign( Handy.protos, {
 	},
 
 
-	//  Find the distance (in METERS!) between two joints
+	//  Find the distance (in CENTIMETERS!) between two joints
 	//  by using joint name Strings.
 	//  You can use the constant style ‘INDEX_PHALANX_INTERMEDIATE’
 	//  or a more friendly lowercase-and-spaces style:
-	// ‘index phalanx intermediate’. Both are valid styles here.
+	// “index phalanx intermediate”. Both are valid styles here.
 	//  This makes writing the shape detection logic super legible.
 	//  Here’s some pinch detection logic:
 	//
@@ -256,7 +366,7 @@ Object.assign( Handy.protos, {
 	//          'index phalanx tip',
 	// 		    'thumb phalanx tip'
 	//	
-	//       ) < 0.03
+	//       ) < 3
 	//
 	//  Easy, right?! Now you can write your own! :)
 
@@ -279,10 +389,19 @@ Object.assign( Handy.protos, {
 			jointB.position &&
 			( !jointA.position.equals( jointB.position ))){
 
-			return jointA.position.distanceTo( jointB.position )	
+			return jointA.position.distanceTo( jointB.position ) * 100
 		}
 		else return NaN
 	},
+
+
+	//  Find the angle (in DEGREES!) from a finger’s base to its tip.
+	//  Here’s how to check if your index finger is extended:
+	//
+	//      return this.digitAngle( 'index' ) < 20
+	//  
+	//  Not bad, eh?
+
 	digitAngle: function( fingerName ){
 
 		fingerName = fingerName.toUpperCase()
@@ -306,38 +425,18 @@ Object.assign( Handy.protos, {
 
 
 	//  Some useful helper functions that
-	//  check the distance between 
-	//  the base of a finger and its tip.
+	//  check the angle from digit base to digit tip
+	//  to determine if that digit is extended
+	//  or contracted.
 
 	digitIsExtended: function( digitName ){
 
 		return this.digitAngle( digitName ) < 45
-
-		// const threshold = 
-		// 	digitName.toUpperCase() === 'THUMB' ?
-		// 	0.03 :
-		// 	0.06
-
-		// return this.distanceBetweenJoints(
-
-		// 	digitName +' phalanx proximal',
-		// 	digitName +' phalanx tip'
-		
-		// ) >= threshold
 	},
 	digitIsContracted: function( digitName ){
 
-		return this.digitAngle( digitName ) > 110//  150
-
-		// return this.distanceBetweenJoints(
-
-		// 	digitName +' phalanx proximal',
-		// 	digitName +' phalanx tip'
-		
-		// ) < 0.05
+		return this.digitAngle( digitName ) > 110
 	},
-
-
 
 
 	//  Useful for assessing 
@@ -365,7 +464,7 @@ Object.assign( Handy.protos, {
 				'angle (˚)',
 				Math.round( digitAngle ),
 				'distance (cm)',
-				Math.round( distance * 1000 ) / 10,
+				Math.round( distance * 10 ) / 10,
 				'isExtended?', 
 				scope[ digitName.toLowerCase() +'IsExtended' ],
 				'isContracted?',
@@ -382,7 +481,60 @@ Object.assign( Handy.protos, {
 	//  of each shape, set the boolean flags accordingly,
 	//  and fire off events on the frame when the state changes.
 
-	checkShapes: function(){
+	update: function(){
+
+		const hand = this
+
+
+		//  If we’re displaying hand shape + finger data 
+		// (angle˚, distance, isExtended, isContracted)
+		//  and there is existing joint data to use...
+
+		if( hand.displaysAreVisible && hand.joints.length ){
+
+			Handy.fingerNames
+			.forEach( function( digitName, i ){
+
+				const 
+				jointName = digitName +'_PHALANX_INTERMEDIATE',
+				joint = hand.joints[ Handy[ jointName ]],
+				displayFrame = hand.children.find( function( child ){
+
+					return child.name === jointName +'_DISPLAY'
+				}),
+				angleRounded = Math.round( hand.digitAngle( digitName ) * 10 ) / 10
+
+				let displayString = digitName +' '+ angleRounded +'˚'
+				if( hand.digitIsExtended( digitName )) displayString +='\nExtended'
+				if( hand.digitIsContracted( digitName )) displayString +='\nContracted'
+
+
+				//  Anchor the displayFrame to the joint’s position
+				//  but push it outward from that position a bit.
+				//  TO DO:
+				//  Perhaps we should attach this to the joint itself
+				//  and then can do relative offsets and rotations for that
+				//  instead of this convoluted stuff.
+
+				displayFrame.position.copy( 
+
+					joint.position.clone()
+					.normalize()
+					.multiplyScalar( 0.03 )
+					// .multiplyScalar( 0.3 + ( i * 0.02 ))
+					.add( joint.position )
+				)
+				displayFrame.quaternion.copy( joint.quaternion )
+				// displayFrame.lookAt( hand.camera )				
+				displayFrame.print( displayString )
+			})
+
+
+			//  TO DO:
+			//  Create an inner-wrist-anchored displayFrame
+			//  to list what hand shapes are active.
+		}
+
 
 		const timeNow = window.performance.now() / 1000
 		if( timeNow - this.lastThrottleTimestamp < Handy.throttleDuration ){
@@ -398,8 +550,10 @@ Object.assign( Handy.protos, {
 
 		//  Ok, we’re ready to get down to business.
 		//  Let’s set some booleans for efficiency.
+		//  NOTE: We may wish to store the angle of each digit
+		//  and then reuse those values
+		//  instead of calculating them each time we want them.
 
-		const hand = this
 		Handy.digitNames
 		.forEach( function( digitName ){
 
@@ -454,25 +608,30 @@ Object.assign( Handy.protos, {
 		//  Don’t forget to update our throttling timestamp.
 
 		this.lastThrottleTimestamp = timeNow
-	},
+	}
+})
 
 
 
 
 
 
-	    ///////////////////////////
-	   //                       //
-	  //   Shape definitions   //
-	 //                       //
-	///////////////////////////
+    ///////////////////////////
+   //                       //
+  //   Shape definitions   //
+ //                       //
+///////////////////////////
+
+
+Handy.defineHandShapes(
 
 
 	//  Index finger and little finger are extended,
 	//  middle and ring finger are conracted,
 	//  and the thumb tip rests on the ring finger.
 
-	checkIsDevilShape: function(){
+	'Devil',
+	function(){
 
 		return (
 
@@ -485,7 +644,7 @@ Object.assign( Handy.protos, {
 				'thumb phalanx tip',
 				'ring phalanx distal'
 
-			) < 0.04
+			) < 4
 		)
 	},
 
@@ -494,7 +653,8 @@ Object.assign( Handy.protos, {
 	//  all other fingers are contracted,
 	//  thumb tip lays on ring finger.
 
-	checkIsDirtyShape: function(){
+	'Dirty',
+	function(){
 
 		return (
 
@@ -507,7 +667,7 @@ Object.assign( Handy.protos, {
 				'thumb phalanx tip',
 				'ring phalanx distal'
 
-			) < 0.04
+			) < 4
 		)
 	},
 
@@ -518,7 +678,8 @@ Object.assign( Handy.protos, {
 	//  is close to the middle finger’s 
 	//  intermediate joint.
 
-	checkIsFistShape: function(){
+	'Fist',
+	function(){
 
 		return (
 
@@ -531,7 +692,7 @@ Object.assign( Handy.protos, {
 				'thumb phalanx tip',
 				'ring phalanx distal'
 
-			) < 0.04
+			) < 4
 		)
 	},
 
@@ -540,7 +701,8 @@ Object.assign( Handy.protos, {
 	//  with her finger and her thumb
 	//  In the shape of an ‘L’ on her forehead.”
 
-	checkIsLShape: function(){
+	'L',
+	function(){
 
 		return (
 
@@ -553,18 +715,66 @@ Object.assign( Handy.protos, {
 	},
 
 
+	//  Thumb, index, and little digits are extended
+	//  while middle and ring fingres are contracted.
+
+	'Love',
+	function(){
+
+		return (
+
+			this.thumbIsExtended &&
+			this.indexIsExtended &&
+			this.middleIsContracted &&
+			this.ringIsContracted &&
+			this.littleIsExtended
+		)
+	},
+	
+
+	//  Index and middle fingers are extended
+	//  and also spread apart
+	//  while ring and little fingers are contracted
+	//  and thumb touches ring finger.
+
+	'Peace',
+	function(){
+
+		return (
+
+			this.indexIsExtended &&
+			this.middleIsExtended &&
+			this.ringIsContracted &&
+			this.littleIsContracted &&
+			this.distanceBetweenJoints(
+
+				'index phalanx tip',
+				'middle phalanx tip'
+			
+			) > 3 &&
+			this.distanceBetweenJoints(
+
+				'thumb phalanx tip',
+				'ring phalanx intermediate'
+			
+			) < 3
+		)
+	},
+
+
 	//  Check only that the thumb tip
 	//  is near the index finger tip,
 	//  with no regard to remaining fingers.
 
-	checkIsPinchShape: function(){
+	'Pinch',
+	function(){
 		
 		return this.distanceBetweenJoints(
 
 			'index phalanx tip',
 			'thumb phalanx tip'
 		
-		) < 0.03
+		) < 3
 	},
 
 
@@ -572,7 +782,8 @@ Object.assign( Handy.protos, {
 	//  while other fingers are curled inward
 	//  and thumb tip rests on middle finger.
 
-	checkIsPointShape: function(){
+	'Point',
+	function(){
 
 		return (
 
@@ -585,10 +796,10 @@ Object.assign( Handy.protos, {
 				'thumb phalanx tip',
 				'middle phalanx intermediate'
 			
-			) < 0.04
+			) < 4
 		)
 	}
-})
+)
 
 
 

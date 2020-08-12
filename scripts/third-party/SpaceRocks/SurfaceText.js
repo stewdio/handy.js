@@ -2,6 +2,9 @@
 //  Copyright © 2017, 2018, 2020 Moar Technologies Corp. See LICENSE for details.
 
 
+import * as THREE from '../Three/three.module.js'
+
+
 
 
 function SurfaceText( options ){
@@ -9,12 +12,12 @@ function SurfaceText( options ){
 	if( options === undefined ) options = {}
 	
 	if( options.canvas === undefined ) options.canvas = {}
-	if( typeof options.canvas.width  !== 'number' ) options.canvas.width  = 1024//  Pixels to render.
-	if( typeof options.canvas.height !== 'number' ) options.canvas.height =  256//
+	if( typeof options.canvas.width  !== 'number' ) options.canvas.width  = 512//  Pixels to render.
+	if( typeof options.canvas.height !== 'number' ) options.canvas.height = 256//
 	
 	if( options.style === undefined ) options.style = {}
-	if( options.style.fontFamily   === undefined ) options.style.fontFamily   = 'BigNoodle, "Helvetica Neue", Helvetica, Arial'
-	if( options.style.fontSize     === undefined ) options.style.fontSize     = '240px'
+	if( options.style.fontFamily   === undefined ) options.style.fontFamily   = "'SF Pro Text', system-ui, -apple-system, 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+	if( options.style.fontSize     === undefined ) options.style.fontSize     = '20px'
 	if( options.style.lineHeight   === undefined ) options.style.lineHeight   = ( parseFloat( options.style.fontSize ) * 1.2 ) +'px'
 	if( options.style.textAlign    === undefined ) options.style.textAlign    = 'center'
 	if( options.style.fillStyle    === undefined ) options.style.fillStyle    = 'white'
@@ -22,8 +25,8 @@ function SurfaceText( options ){
 	if( options.style.font         === undefined ) options.style.font         = options.style.fontSize +' '+ options.style.fontFamily
 
 	if( options.virtual === undefined ) options.virtual = {}
-	if( typeof options.virtual.width  !== 'number' ) options.virtual.width  = 0.20//  Meters in VR.
-	if( typeof options.virtual.height !== 'number' ) options.virtual.height = 0.05//
+	if( typeof options.virtual.width  !== 'number' ) options.virtual.width  = 0.050//  Meters in VR.
+	if( typeof options.virtual.height !== 'number' ) options.virtual.height = 0.025//
 
 	if( options.text === undefined ) options.text = ''
 	if( typeof options.x !== 'number' ){
@@ -97,3 +100,5 @@ function SurfaceText( options ){
 
 
 
+
+export { SurfaceText }
