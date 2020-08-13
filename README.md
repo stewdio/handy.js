@@ -108,7 +108,6 @@ Handy.defineHandShape(
 
 
 ```
-------------------------------------------------------------------------
 The shape name begins with an uppercase letter, though this is not 
 strictly necessary. The units returned by `distanceBetweenJoints` are
 _centimeters._ (Why use centimeters instead of the XR standard unit of 
@@ -117,6 +116,15 @@ you’re measuring smaller things—hands—rather than larger
 things—rooms—it’s more convenient.) For a list of hand joint names and 
 their locations on the hand see the [WebXR hand input API W3C 
 draft](https://immersive-web.github.io/webxr-hand-input/).  
+  
+In addition to `distanceBetweenJoints`, another frequently used helper
+method is `digitAngle` which returns the angle created between a digit’s
+base and its tip. For example, to find the angle of your left hand’s 
+index finger you would query `handLeft.digitAngle( 'index' )`. The unit 
+returned is degrees rather than radians. For more detail on methods made
+available to handified objects, see the [assignments to the 
+`Handy.protos{}` object within `scripts/Handy.js` starting near line 
+326](https://github.com/stewdio/handy.js/blob/master/scripts/Handy.js#L326).  
   
 The above `defineHandShape()` command will automatically create the 
 following `Boolean` flags on each “handified” object, and will update
@@ -168,6 +176,17 @@ handLeft.addEventListener(
 )
 
 ```  
+The content of the passed `event` argument is:
+
+```javascript
+{
+	type,  //  Event name, eg. “peace shape began”.
+	hand,  //  Hand object itself.
+	shape, //  Name of the shape identified.
+	message//  Full description of the event, eg. “LEFT hand peace shape began”.
+}
+
+```  
   
   
 A note on repetition
@@ -195,12 +214,12 @@ preceding object.
 	hand.addEventListener( 
 
 		'peace shape began', 
-		 peaceShapeBeganCallback
+		 onPeaceShapeBegan
 	)
 	hand.addEventListener(
 
 		'peace shape ended',
-		 peaceShapeEndedCallback
+		 onPeaceShapeEnded
 	)
 })
 
