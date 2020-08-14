@@ -1,4 +1,5 @@
-![Handy.js](./media/vr-hands.gif "Handy.js")  
+![Handy.js](./media/finger-guns.gif "Handy.js finger guns")
+![Handy.js](./media/digit-data.gif "Handy.js digit data")  
 
 
 👋 Handy.js
