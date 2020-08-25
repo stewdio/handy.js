@@ -182,26 +182,7 @@ function setupThree(){
 //  https://developers.google.com/web/tools/chrome-devtools/console/javascript
 //  https://javascript.info/devtools
 
-window.controllers = {
-
-	left:  {},
-	right: {}
-}
-
-
-//  We also need the same left / right objects 
-//  for the following bits,
-//  but why repeat yourself in code?
-//  Instead we’ll just clone the controllers object.
-//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-
-window.controllerGrips = Object.assign( {}, controllers )
-window.hands = Object.assign( {}, controllers )
-
-
-//  Also -- why not?
-//  Don’t you want to explore this in the console too?
-
+window.THREE = THREE
 window.Handy = Handy
 
 
@@ -216,7 +197,7 @@ function setupHands(){
 
 
 	//  We’re about to set up HANDS,
-	//  so what’s this about ‘controllers’?
+	//  so what’s this about ‘controller0’ and controller1?
 	//  You might describe this as our simplest endeavor.
 	//  Just positions in 3D space
 	//  and ray beams extending outward for aim.
@@ -226,8 +207,7 @@ function setupHands(){
 	//  and with an Array’s map() function.
 	//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 
-	;[ controllers.left, controllers.right ] = 
-	 [ controllers.left, controllers.right ]
+	const [ contoller0, controller1 ] = [ {}, {} ]
 	.map( function( controller, i ){
 
 		controller = renderer.xr.getController( i )
@@ -251,9 +231,9 @@ function setupHands(){
 	// (A model will be fetched from a CDN.)
 	//  https://en.wikipedia.org/wiki/Content_delivery_network
 
-	const controllerModelFactory = new XRControllerModelFactory()
-	;[ controllerGrips.left, controllerGrips.right ] = 
-	 [ controllerGrips.left, controllerGrips.right ]
+	const 
+	controllerModelFactory = new XRControllerModelFactory(),
+	[ controllerGrip0, controllerGrip1 ] = [ {}, {} ]
 	.map( function( controllerGrip ){
 
 		controllerGrip = renderer.xr.getControllerGrip( 0 )
@@ -285,10 +265,16 @@ function setupHands(){
 		})
 		hand.modelIndex = ( hand.modelIndex + 1 ) % hand.models.length
 		hand.models[ hand.modelIndex ].visible = true
+	},
+	colors = {
+
+		default: new THREE.Color( 0xFFFFFF ),//  White glove.
+		left:    new THREE.Color( 0x00FF00 ),//  Green glove for left.
+		right:   new THREE.Color( 0xFF0000 ) //  Red glove for right.
 	}
 
-	;[ hands.left, hands.right ] = 
-	 [ hands.left, hands.right ]
+
+	const [ hand0, hand1 ] = [ {}, {} ]
 	.map( function( hand, i ){
 
 
@@ -299,18 +285,6 @@ function setupHands(){
 
 		hand = renderer.xr.getHand( i )
 		scene.add( hand )
-
-
-		//  This still seems shaky to me.
-		//  What assurance do we have that 0 == left
-		//  and 1 == right?
-		// (Recall Vive controllers had the potential to swap!)
-		//  Note this very terse conditional operator here.
-		//  It’s made of a ‘?’ and ‘:’ and called a ternary operator:
-		//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
-
-		hand.handedness = i ? 'right' : 'left'
-		console.log( 'Creating', hand.handedness.toUpperCase(), 'hand.' )
 
 
 		//  So far we have an abstract model of a hand
@@ -333,92 +307,99 @@ function setupHands(){
 			handModelFactory.createHandModel( hand, 'oculus', { model: 'lowpoly' }),
 			handModelFactory.createHandModel( hand, 'oculus' )
 		]
-		hand.models.forEach( function( model ){
-
-			hand.add( model )
-			model.visible = false
-		})
 		hand.modelIndex = 0
-		hand.models[ hand.modelIndex ].visible = true
+
+
 
 
 		//  This is what makes detecting hand shapes easy!
-		//  It updates boolean flags for hand shape statuses
-		//  and fires events as well :)
 
 		Handy.makeHandy( hand )
-		
+
+
+
+
+		//  When hand tracking data becomes available
+		//  we’ll receive this connection event.
+
+		hand.addEventListener( 'connected', function( event ){
+
+			//console.log( 'Hand tracking has begun!', event )
+
+
+			//  As long as the handedness never changes (ha!)
+			//  this should do us right.
+
+			hand.handedness = event.data.handedness
+
+
+			//  When the hand joint data comes online
+			//  it will make ALL of the above models visible.
+			//  Let’s hide them all except for the active one.
+
+			hand.models.forEach( function( model ){
+
+				hand.add( model )
+				model.visible = false
+			})	
+			hand.models[ hand.modelIndex ].visible = true
+		})
+
 
 		//  Speaking of events, here’s how easy it is
-		//  to listen to our custom hand shapes:
+		//  to listen to our custom hand shapes.
+		//  Make a fist to change hand visual style.
 
 		hand.addEventListener( 'fist shape began', cycleHandModel )
 
 
-		return hand
-	})
+		//  Let’s trigger a glove color change
+		//  when we make a “peace” shape.
+		//  Funny thing about peace -- most folks 
+		//  hold this shape like an ASL 2.
+		//  But its etymology coincides with ASL V.
+		//  So we’ve labeled BOTH 2 and V as “peace”.
+		//  One way to account for that is to use
+		//  the “shape changed” event
+		//  and check shapeIs and shapeWas to confirm
+		//  we’ve only just switched to a “peace” shape.
+
+		//  This is also a useful event listener for debugging.
+		//  The event.message property will display the “names” Array
+		//  for both the currently detected shape and the prior one.
+
+		hand.addEventListener( 'shape changed', function( event ){
+
+			// console.log( event.message )
+			if( event.resultIs.shape.names.includes( 'peace' ) &&
+				!event.resultWas.shape.names.includes( 'peace' )){
+
+				hand.checkHandedness()
+				hand.traverse( function( obj ){
+
+					if( obj.material ){
 
 
-	//  Woa ho ho. Look at this last-minute addition.
-	//  Make your hand into a “devil horns” shape
-	//  to switch between default and hand-specific color.
+						//  Note this very terse conditional operator here.
+						//  It’s made of a ‘?’ and ‘:’ and called a ternary operator:
+						//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
 
-	const defaultColor = new THREE.Color( 0xFFFFFF )
-	hands.left.color   = new THREE.Color( 0x00FF00 )
-	hands.right.color  = new THREE.Color( 0xFF0000 )
-	;[ hands.left, hands.right ].forEach( function( hand ){
-		
-		hand.isDefaultColor = true
-		hand.addEventListener( 'devil shape began', function(){
-
-			hand.traverse( function( obj ){
-
-				if( obj.material ){
-
-					obj.material.color = hand.isDefaultColor ? hand.color : defaultColor
-				}
-			})
-			hand.isDefaultColor = !hand.isDefaultColor
-		})
-	})
-
-
-	//  This code block here is just to demonstrate
-	//  listening for every hand shape defined in Handy.
-	//  It’s a nice gut check to ensure everything works.
-
-	;[ hands.left, hands.right ].forEach( function( hand ){
-
-		console.log( 
-
-			'Adding event listeners for the', 
-			 hand.handedness.toUpperCase(), 
-			'hand...'
-		)
-		Handy.shapeNames
-		.forEach( function( shapeName ){
-
-			console.log( 
-
-				'  Adding event listeners for the', 
-				 shapeName, 
-				'hand shape.'
-			)
-			const response = function( event ){
-
-				console.log( '👋', event.message )
+						obj.material.color = hand.isDefaultColor ? 
+							colors[ hand.handedness ] : 
+							colors.default
+					}
+				})
+				hand.isDefaultColor = !hand.isDefaultColor
 			}
-			hand.addEventListener( 
-
-				shapeName.toLowerCase() +' shape began',
-				response
-			)
-			hand.addEventListener( 
-
-				shapeName.toLowerCase() +' shape ended',
-				response
-			)
 		})
+
+
+		//  We’re going to make our display frames vsible
+
+		hand.displayFrame.visible = true
+
+
+		return hand
 	})
 }
 
@@ -600,11 +581,15 @@ let timePrevious
 
 function loop( timeNow, frame ){
 
-	;[ hands.left, hands.right ].forEach( function( hand ){
+	Handy.update( function( hand ){
 
-		hand.update()
-		if( hand.handedness === undefined ) hand.checkHandedness()
-		if( hand.isPointShape ){
+		if( hand.isShape( 'fire point', 3000 )){
+
+
+			//  Bolt comes from my original “Space Rocks” (2017) WebVR demo.
+			//  https://spacerocks.moar.io/
+			//  Pehaps I’ll update that someday 
+			//  now that the WebXR API is finalized?
 
 			const bolt = new Bolt(
 
@@ -613,6 +598,7 @@ function loop( timeNow, frame ){
 				hand.joints[ Handy.WRIST ]//  Reference point.
 			)
 			
+
 			//  Yeah... You’re still upset about Bolt attaching state too hand, eh?
 			//  Me too. It’s not the right way to do business.
 			//  But I’m tired. Bolt is old code that got a quick retro fit.
@@ -634,7 +620,7 @@ function loop( timeNow, frame ){
 
 	//  Determine the time since last frame in SECONDS (not milliseconds).
 	//  Then perform all the animation updates based on that.
-	//  Ok -- in this case it’s only for Bolt.
+	//  Ok -- in this case it’s only for Bolt.	
 
 	if( timePrevious === undefined ) timePrevious = timeNow
 	const timeDelta = ( timeNow - timePrevious ) / 1000
@@ -664,6 +650,10 @@ window.addEventListener( 'DOMContentLoaded', function(){
 	setupHands()
 	setupContent()
 })
+
+
+
+
 
 
 

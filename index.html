@@ -28,37 +28,50 @@
 	<body>
 		<div id="three"></div>
 		<section>
-			👋 Ahoy.<br>
+			<h1>👉&nbsp; Handy.js &nbsp;👈</h1>
 			<br>
-			Handy makes defining and using custom hand shapes in WebXR a snap.
-			Just name your hand shape (eg. “pinch”)
-			and write a function that defines the shape.
-			Handy will create and update convenience booleans
-			that you can query in your update loop,
-			and it will create custom events that you can listen for.<br>
+			<strong>Handy</strong> makes defining and using custom hand shapes in WebXR a snap.
+			Why use hand-held contollers when you can use your bare hands? 👋 
+			<strong>Handy</strong> recognizes over 100 hand shapes 
+			right out of the box—including the 
+			<a href="https://en.wikipedia.org/wiki/American_Sign_Language" target="_blank">American Sign Language (ASL) alphabet</a>.
+			Are you a developer?
+			Recording and adding new shape definitions is easy.
+			Want more efficiency?
+			Slimming down the number of shapes to detect is even easier.
+			Here’s the 
+			<a href="https://github.com/stewdio/handy.js" target="_blank">Handy.js source code</a>.
+			<br>
 			<br>
 			<strong>Demo</strong>.
-			Make your hand into a “finger gun” shape
-			then tap your thumb down 
-			onto your middle finger
-			to shoot lasers from your hand.
-			Make a fist to cycle through different hand model styles.
-			“Devil horns” toggle the hand-specific colors.<br>
+			👉 Make your hand into a “finger gun” shape , 
+			then tap your thumb down onto your middle finger 
+			to shoot lasers from your hand. 
+			✊ Make a fist to cycle through different hand model visual styles. 
+			✌️ Make a “peace sign” to toggle the hand-specific colors—red for right, green for left.
+			<br>
 			<br>
 			<strong>Requirements</strong>.
-			This code has been designed for the Oculus Quest.
-			You’ll need to follow these steps before you can 
-			experience the demo yourself:
+			This code has been designed for the 
+			<a href="https://www.oculus.com/quest/" target="_blank">Oculus Quest</a>
+			headset, though device support
+			will expand as more devices implement the 
+			<a hrref="https://immersive-web.github.io/webxr-hand-input/">WebXR hand tracking API</a>.
+			Be sure your Oculus Quest has all of the latest software updates 
+			installed, including Oculus Browser 11.1.0.1 or later, then 
+			follow these steps to experience the demo for yourself: 
 			<br>
 			<ol>
 				<li>
-					In Oculus <strong>settings</strong>
-					enable automatic switching between regular hand controlles
-					and bare hands.
+					In the main <strong>Settings</strong> menu
+					navigate to Device → Hands and Controllers.
+					Enable both **Hand Tracking**
+					and **Auto Enable Hands or Controllers**.
 				</li>
 				<li>
-					In the Oculus <strong>browser</strong>
+					In <strong>Oculus Browser</strong>
 					visit <a href="chrome://flags/" taget="_blank">chrome://flags/</a>.
+					and search for “hands” in the flags search box.
 				</li>
 				<li>
 					Within the flags page, <strong>enable</strong> 
@@ -66,22 +79,20 @@
 					(<code>#webxr-hands</code>).
 				</li>
 				<li>
-					Within the flags page, <strong>disable</strong> 
-					the “WebXR experiences with hands tracking” flag
-					(<code>#webxr-hands-tracking</code>).
-					Yes. <em>Disable</em> it.
-					We’re at that funny early stage of the technology where 
-					things are not always what they seem.
+					Again, within this flags page,
+					set the “WebXR experiences with joints tracking” flag
+					(<code>#webxr-hands</code>)
+					to <strong>Enabled</strong>.
 				</li>
 				<li>
-					Restart the Oculus browser
+					Restart Oculus Browser
 					and visit this site again.
 					Use your hand controllers 
 					to click the “Enter VR” button.
 					Once you are inside the experience put your controllers down,
 					hold your hands out in front of you 
 					so that the headset can see them,
-					and enjoy! 😄
+					and enjoy! 👍  
 				</li>
 			</ol>
 			<br>
