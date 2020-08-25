@@ -1,5 +1,5 @@
 ![Handy.js](./media/finger-guns.gif "Handy.js finger guns")
-![Handy.js](./media/digit-data.gif "Handy.js digit data")  
+![Handy.js](./media/a-to-fire.gif "Handy.js ASL alphabet")  
 
 
 
