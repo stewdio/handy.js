@@ -127,7 +127,7 @@ closer than the supplied distance threshold.
 
 if( handLeft.isShape( 'peace', 3000 )){
 
-	//  Do something the enture time
+	//  Do something the entire time
 	//  that our hand resembles
 	//  a “peace” shape
 	//  within a Euclidean distance of
