@@ -9,7 +9,7 @@
 Want to add hand shape recognition to your 
 [WebXR](https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API) 
 project? **Handy** makes defining and using custom hand shapes a snap!
-Why use hand-held contollers when you can use your bare hands? 👋 
+Why use hand-held controllers when you can use your bare hands? 👋 
 Built on [Three.js](https://threejs.org/) and tested on the 
 [Oculus Quest](https://www.oculus.com/quest/), **Handy** recognizes 
 over 100 hand shapes right out of the box—including the 
