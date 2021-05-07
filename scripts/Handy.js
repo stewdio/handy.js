@@ -1,16 +1,16 @@
 
-//  Copyright © 2020 Stewart Smith. See LICENSE for details.
+//  Copyright © 2020–2021 Stewart Smith. See LICENSE for details.
 
 
 
 
 //	👉 𝖨𝗇𝗍𝗋𝗈𝖽𝗎𝖼𝗂𝗇𝗀 𝗛𝗮𝗻𝗱𝘆.𝗷𝘀 👈
 //
-//  Want to add hand shape recognition to your WebXR project?
-//  Handy makes defining and using custom hand shapes a snap!
+//  Want to add hand pose recognition to your WebXR project?
+//  Handy makes defining and using custom hand poses a snap!
 //  Why use hand-held contollers when you can use your bare 
 //  hands? 👋  Built on Three.js and tested on the Oculus Quest,
-//  Handy recognizes over 100 hand shapes right out of the box --
+//  Handy recognizes over 100 hand poses right out of the box --
 //  including the American Sign Language (ASL) alphabet.
 //	And yes, full hand gesture recognition is on the roadmap 👍
 //
@@ -19,8 +19,8 @@
 
 
 
-import { shapes as shapesLeft  } from './Handy-shapes-left.js'
-import { shapes as shapesRight } from './Handy-shapes-right.js'
+import { poses as posesLeft  } from './Handy-poses-left.js'
+import { poses as posesRight } from './Handy-poses-right.js'
 import * as THREE from './third-party/Three/three.module.js'
 import { SurfaceText } from './third-party/SpaceRocks/SurfaceText.js'
 
@@ -49,46 +49,46 @@ const Handy = {
 	//  We use this Array to look up joint names by index value.
 	//  What’s at joint index #7?
 	//  Just ask for Handy.jointNames[ 7 ]
-	//  and you’ll get the value 'INDEX_PHALANX_INTERMEDIATE'.
+	//  and you’ll get the value 'index-finger-phalanx-intermediate'.
 
 	//  We also use this Array to append constants directly 
 	//  onto the Handy{} object like so:
-	//  Handy.INDEX_PHALANX_INTERMEDIATE === 7.
+	//  Handy[ 'index-finger-phalanx-intermediate' ] === 7.
 	//  This exactly mirrors XRHand:
-	//  Handy.INDEX_PHALANX_INTERMEDIATE === XRHand.INDEX_PHALANX_INTERMEDIATE.
+	//  Handy[ 'index-finger-phalanx-intermediate' ] === XRHand[ 'index-finger-phalanx-intermediate' ].
 
 	jointNames: [
 
-		'WRIST',                      //   0
+		'wrist',                             //   0
 		
-		'THUMB_METACARPAL',           //   1
-		'THUMB_PHALANX_PROXIMAL',     //   2
-		'THUMB_PHALANX_DISTAL',       //   3
-		'THUMB_PHALANX_TIP',          //   4
+		'thumb-metacarpal',                  //   1
+		'thumb-phalanx-proximal',            //   2
+		'thumb-phalanx-distal',              //   3
+		'thumb-tip',                         //   4
 
-		'INDEX_METACARPAL',           //   5  This is NO LONGER null !
-		'INDEX_PHALANX_PROXIMAL',     //   6
-		'INDEX_PHALANX_INTERMEDIATE', //   7
-		'INDEX_PHALANX_DISTAL',       //   8
-		'INDEX_PHALANX_TIP',          //   9
+		'index-finger-metacarpal',           //   5
+		'index-finger-phalanx-proximal',     //   6
+		'index-finger-phalanx-intermediate', //   7
+		'index-finger-phalanx-distal',       //   8
+		'index-finger-tip',                  //   9
 
-		'MIDDLE_METACARPAL',          //  10  This is NO LONGER null !
-		'MIDDLE_PHALANX_PROXIMAL',    //  11
-		'MIDDLE_PHALANX_INTERMEDIATE',//  12
-		'MIDDLE_PHALANX_DISTAL',      //  13
-		'MIDDLE_PHALANX_TIP',         //  14
+		'middle-finger-metacarpal',          //  10
+		'middle-finger-phalanx-proximal',    //  11
+		'middle-finger-phalanx-intermediate',//  12
+		'middle-finger-phalanx-distal',      //  13
+		'middle-finger-tip',                 //  14
 
-		'RING_METACARPAL',            //  15  This is NO LONGER null !
-		'RING_PHALANX_PROXIMAL',      //  16
-		'RING_PHALANX_INTERMEDIATE',  //  17
-		'RING_PHALANX_DISTAL',        //  18
-		'RING_PHALANX_TIP',           //  19
+		'ring-finger-metacarpal',            //  15
+		'ring-finger-phalanx-proximal',      //  16
+		'ring-finger-phalanx-intermediate',  //  17
+		'ring-finger-phalanx-distal',        //  18
+		'ring-finger-tip',                   //  19
 
-		'LITTLE_METACARPAL',          //  20
-		'LITTLE_PHALANX_PROXIMAL',    //  21
-		'LITTLE_PHALANX_INTERMEDIATE',//  22
-		'LITTLE_PHALANX_DISTAL',      //  23
-		'LITTLE_PHALANX_TIP'          //  24
+		'pinky-finger-metacarpal',           //  20
+		'pinky-finger-phalanx-proximal',     //  21
+		'pinky-finger-phalanx-intermediate', //  22
+		'pinky-finger-phalanx-distal',       //  23
+		'pinky-finger-tip'                   //  24
 	],
 
 
@@ -97,19 +97,19 @@ const Handy = {
 
 	digitNames: [
 
-		'THUMB',
-		'INDEX',
-		'MIDDLE',
-		'RING',
-		'LITTLE'
+		'thumb',
+		'index',
+		'middle',
+		'ring',
+		'pinky'
 	],
 	digitTipNames: [
 
-		'THUMB_PHALANX_TIP', //   4
-		'INDEX_PHALANX_TIP', //   9
-		'MIDDLE_PHALANX_TIP',//  14
-		'RING_PHALANX_TIP',  //  19
-		'LITTLE_PHALANX_TIP' //  24
+		'thumb-tip', //   4
+		'index-finger-tip', //   9
+		'middle-finger-tip',//  14
+		'ring-finger-tip',  //  19
+		'pinky-finger-tip' //  24
 	],
 	isDigitTipIndex: function( i ){
 
@@ -122,10 +122,10 @@ const Handy = {
 	},
 	fingerNames: [
 
-		'INDEX',
-		'MIDDLE',
-		'RING',
-		'LITTLE'
+		'index',
+		'middle',
+		'ring',
+		'pinky'
 	],
 	isFingerTipIndex: function( i ){
 
@@ -146,19 +146,19 @@ const Handy = {
 
 
 	//  Here’s the data goods;
-	//  Shapes for the left hand to match
-	//  and shapes for the right hand to match.
+	//  Poses for the left hand to match
+	//  and poses for the right hand to match.
 
-	shapes: {
+	poses: {
 
-		left:  shapesLeft,
-		right: shapesRight
+		left:  posesLeft,
+		right: posesRight
 	},
 
 
 	//  Maximum duration in milliseconds
 	//  that we’ll allow per update() loop
-	//  PER HAND for a shape search.
+	//  PER HAND for a pose search.
 	//  Remember, we want to get out of the way
 	//  as quickly as possible!
 
@@ -376,7 +376,7 @@ Object.assign( Handy.protos, {
 	//  You can use the constant style ‘INDEX_PHALANX_INTERMEDIATE’
 	//  or a more friendly lowercase-and-spaces style:
 	// “index phalanx intermediate”. Both are valid styles here.
-	//  This makes writing the shape detection logic super legible.
+	//  This makes writing the pose detection logic super legible.
 	//  Here’s some pinch detection logic:
 	//
 	//      return this.distanceBetweenJoints(
@@ -399,7 +399,8 @@ Object.assign( Handy.protos, {
 
 			return hand.joints[ 
 
-				Handy[ name.toUpperCase().replace( /\s+/g, '_' )]
+				// Handy[ name.toUpperCase().replace( /\s+/g, '_' )]
+				name.toLowerCase().replace( /\s+/g, '-' )
 			]
 		})
 
@@ -422,11 +423,15 @@ Object.assign( Handy.protos, {
 
 	digitAngle: function( fingerName ){
 
-		fingerName = fingerName.toUpperCase()
+		fingerName = fingerName.toLowerCase()
 
 		const
-		fingerTip = this.joints[ Handy[ fingerName +'_PHALANX_TIP' ]],
-		fingerProximal = this.joints[ Handy[ fingerName +'_PHALANX_PROXIMAL' ]]
+		fingerTip = fingerName === 'thumb' ? 
+			this.joints[ 'thumb-tip' ] :
+			this.joints[ fingerName +'-finger-tip' ],
+		fingerProximal = fingerName === 'thumb' ?
+			this.joints[ 'thumb-phalanx-proximal' ] :
+			this.joints[ fingerName +'-finger-phalanx-proximal' ]
 
 		if( fingerTip && 
 			fingerProximal && 
@@ -468,27 +473,30 @@ Object.assign( Handy.protos, {
 		.forEach( function( digitName ){
 
 			const 
+			proximalName = digitName === 'thumb' ?
+				'thumb-phalanx-proximal' :
+				digitName +'-finger-phalanx-proximal',
+			tipName = digitName === 'thumb' ?
+				'thumb-tip' : 
+				digitName + '-finger-tip',
 			distance = hand.distanceBetweenJoints(
 
-				digitName +' phalanx proximal',
-				digitName +' phalanx tip'
+				proximalName,
+				tipName
 			),
 			digitAngle = hand.digitAngle( digitName )
 
 			console.log( 
 
 				hand.handedness, 
-				digitName, 
-				'angle (˚)',
-				Math.round( digitAngle ),
-				'distance (cm)',
-				Math.round( distance * 10 ) / 10,
-				'isExtended?', 
-				//hand[ digitName.toLowerCase() +'IsExtended' ],
-				hand.digitIsExtended( digitName ),
-				'isContracted?',
-				//hand[ digitName.toLowerCase() +'IsContracted' ],
-				hand.digitIsContracted( digitName )
+				digitName +'.', 
+				'angle:',
+				Math.round( digitAngle )+'˚',
+				'distance:',
+				( Math.round( distance * 10 ) / 10 ) +'cm',
+				hand.digitIsExtended( digitName ) ?
+					'is extended' :
+					'is contracted'
 			)
 		})
 	},
@@ -505,13 +513,13 @@ Object.assign( Handy.protos, {
 	////////////////
 
 
-	//  Take a snapshot of this hand’s shape.
+	//  Take a snapshot of this hand’s pose.
 
-	readLiveShapeData: function(){
+	readLivePoseData: function(){
 
 		const 
 		hand  = this,
-		wrist = hand.joints[ 0 ],
+		wrist = hand.joints[ 'wrist' ],
 		jointPositions    = [],
 		digitTipPositions = [],
 
@@ -532,9 +540,15 @@ Object.assign( Handy.protos, {
 			.clone()
 			.premultiply( 
 
-				new THREE.Matrix4().getInverse( wrist.matrixWorld )
+				// new THREE.Matrix4().copy( wrist.matrixWorld.invert() )
+				wrist.matrixWorld.clone().invert()
 			)
 
+			
+			//  Extract the X, Y, Z positions from the resulting matrix
+			//  and return this as a flat Array
+			//  with distances rounded to the nearest millimeter.
+			
 			return [ 
 
 				Math.round( jointMatrix.elements[ 12 ] * 1000 ),
@@ -564,14 +578,17 @@ Object.assign( Handy.protos, {
 		//  Store the positions of each joint relative to the wrist.
 		//  Note that if a position is not “ready” 
 		//  then that entry in the Array will be undefined.
-		//  This is important during shape detection:
+		//  This is important during pose detection:
 		//  Undefined elements will NOT accrue “distance”, ie.
 		//  If the pinky finger positions don’t matter to a particular
-		//  hand shape, you can just delete those entries!
+		//  hand pose, you can just delete those entries!
 
-		for( let i = 0; i < hand.joints.length; i ++ ){
+		
+		Object.values( hand.joints )
+		.forEach( function( joint, i ){
 
-			const joint = hand.joints[ i ]
+			// console.log( i, 'joint', joint )
+
 			if( joint !== undefined &&
 				joint.position !== undefined &&
 				joint.position.equals( Handy.VECTOR3_ZERO ) === false ){
@@ -584,7 +601,23 @@ Object.assign( Handy.protos, {
 					digitTipPositions.push( preparedPosition )
 				}
 			}
-		}
+		})
+		
+		// for( let i = 0; i < hand.joints.length; i ++ ){
+			// const joint = hand.joints[ i ]
+		// 	if( joint !== undefined &&
+		// 		joint.position !== undefined &&
+		// 		joint.position.equals( Handy.VECTOR3_ZERO ) === false ){
+
+		// 		const preparedPosition = preparePosition( joint )
+		// 		jointPositions[ i ] = preparedPosition
+
+		// 		if( Handy.isDigitTipIndex( i )){
+
+		// 			digitTipPositions.push( preparedPosition )
+		// 		}
+		// 	}
+		// }
 
 
 		//  Package it up and send it off.
@@ -599,18 +632,18 @@ Object.assign( Handy.protos, {
 	},
 
 
-	//  Grab a snapshot of the live hand shape,
+	//  Grab a snapshot of the live hand pose,
 	//  output its data to the JavaScript console
-	// (so you can copy and paste it into your shapes file),
-	//  and also add it to the shapes list
+	// (so you can copy and paste it into your poses file),
+	//  and also add it to the poses list
 	//  so you can query for it immediately :)
 
-	recordLiveShape: function( name, showIt ){
+	recordLivePose: function( name, showIt ){
 
 		const 
 		hand = this,
 		handedness = hand.checkHandedness(),
-		shape = Object.assign(
+		pose = Object.assign(
 
 			{
 				names: [ name ],
@@ -618,28 +651,28 @@ Object.assign( Handy.protos, {
 				handyRevision: Handy.REVISION,
 				time: Date.now()
 			},
-			hand.readLiveShapeData()
+			hand.readLivePoseData()
 		)
 		
-		console.log( '\n\nSHAPE DEFINITION\n\n'+ JSON.stringify( shape ) +',\n\n\n' )
-		Handy.shapes[ handedness ].push( shape )
-		if( showIt ) hand.showShape( shape, hand.joints[ 0 ].matrixWorld )
-		return shape
+		console.log( '\n\nPOSE DEFINITION\n\n'+ JSON.stringify( pose ) +',\n\n\n' )
+		Handy.poses[ handedness ].push( pose )
+		if( showIt ) hand.showPose( pose, hand.joints[ 0 ].matrixWorld )
+		return pose
 	},
 
 
-	//  Did your shape record correctly just now?
+	//  Did your pose record correctly just now?
 	//  This is a quick and dirty way to see 
 	// (within XR!) if it’s roughly correct.
 
-	showShape: function( shape, matrix ){
+	showPose: function( pose, matrix ){
 
 		const
 		hand  = this,
 		handRoot = new THREE.Object3D(),
 		size = 0.02
 
-		shape.jointPositions
+		pose.jointPositions
 		.forEach( function( position ){
 
 			const box = new THREE.Mesh(
@@ -664,19 +697,19 @@ Object.assign( Handy.protos, {
 	},
 
 
-	//  We can also show previously recorded shapes.
+	//  We can also show previously recorded poses.
 
-	showShapeByName: function( shapeName, matrix ){
+	showPoseByName: function( poseName, matrix ){
 
 		const
 		hand  = this,
-		shape = Handy.shapes[ hand.handedness ]
-		.find( function( shape ){ 
+		pose = Handy.poses[ hand.handedness ]
+		.find( function( pose ){ 
 
-			return shape.names.includes( shapeName )
+			return pose.names.includes( poseName )
 		})
 
-		if( shape ) hand.showShape( shape, matrix )
+		if( pose ) hand.showPose( pose, matrix )
 	},
 
 
@@ -693,7 +726,7 @@ Object.assign( Handy.protos, {
 
 	//  Upon casually discussing Handy with a good friend of mine,
 	//  Robert Gerard Pietrusko (http://warning-office.org),
-	//  he suggessted I try recording hand shapes and measuring the
+	//  he suggessted I try recording hand poses and measuring the
 	//  Euclidean distance between them.
 	//  https://en.wikipedia.org/wiki/K-means_clustering
 	//  This turned out to be very efficient! Sort of like Word2Vec,
@@ -702,11 +735,11 @@ Object.assign( Handy.protos, {
  	//  Question is, do we try Cosine Distance in the future?
 	//  https://cmry.github.io/notes/euclidean-v-cosine
 
-	liveShapeData: [],
+	livePoseData: [],
 	searchLoopBeganAt: null,
 	searchLoopsCounter: 0,
 	searchLoopsCounterMax: 0,
-	searchShapeIndex: 0,
+	searchPoseIndex: 0,
 	searchResultsBuffer:  [],
 	searchResults: [],
 	searchResultsHistory: [],//  For future use. (Will add gesture recognition.)
@@ -718,22 +751,22 @@ Object.assign( Handy.protos, {
 		const 
 		hand   = this,
 		handedness = hand.checkHandedness(),
-		shapes = Handy.shapes[ handedness ],
+		poses = Handy.poses[ handedness ],
 		method = hand.searchMethod
 
 
 		//  Is our handedness undefined?
-		//  Do we have zero shapes to detect?
+		//  Do we have zero poses to detect?
 		//  If so, bail immediately!
 
-		if( shapes === undefined || shapes.length === 0 ) return
+		if( poses === undefined || poses.length === 0 ) return
 
 
 		//  We’re going to do some serious “Array clutching” here.
 		//  That means we may NOT finish looping through the Array
 		//  before we “run out of time.” Why do this? Because if we’re
 		//  running at 72fps or 90fps, etc. and we really only need
-		//  to do a full shapes search a few times per second,
+		//  to do a full poses search a few times per second,
 		//  then we have render loops to spare and we ought to get
 		//  out of the way as quickly as possible so that YOU can
 		//  use that render loop time for yourself :)
@@ -745,21 +778,21 @@ Object.assign( Handy.protos, {
 		hand.searchLoopBeganAt = window.performance.now()
 		for( let 
 			
-			i = hand.searchShapeIndex; 
-			i < shapes.length; 
+			i = hand.searchPoseIndex; 
+			i < poses.length; 
 			i ++ 
 		){
 		
 
 			//  If we’re just beginning a new search
 			//  we need to reset our results buffer
-			//  and ask for new live hand shape data.
+			//  and ask for new live hand pose data.
 
 			if( i === 0 ){
 
 				hand.searchLoopsCounter = 0
 				hand.searchResultsBuffer = []
-				hand.liveShapeData = hand.readLiveShapeData()
+				hand.livePoseData = hand.readLivePoseData()
 
 
 				//  If there’s no joint position data
@@ -767,11 +800,11 @@ Object.assign( Handy.protos, {
 				// (in which case it’s likely ALL joint positions are zero)
 				//  then this live data is useless. (So bail!)
 
-				if( hand.liveShapeData.jointPositions.length === 0 ||
+				if( hand.livePoseData.jointPositions.length === 0 ||
 					( 
-						hand.liveShapeData.jointPositions[ 0 ][ 0 ] === 0 &&
-						hand.liveShapeData.jointPositions[ 0 ][ 1 ] === 0 &&
-						hand.liveShapeData.jointPositions[ 0 ][ 2 ] === 0
+						hand.livePoseData.jointPositions[ 0 ][ 0 ] === 0 &&
+						hand.livePoseData.jointPositions[ 0 ][ 1 ] === 0 &&
+						hand.livePoseData.jointPositions[ 0 ][ 2 ] === 0
 					)){
 
 					return
@@ -790,13 +823,13 @@ Object.assign( Handy.protos, {
 	
 
 			//  Go about our normal business.
-			//  eg, evaluate the distance between this hand shape
+			//  eg, evaluate the distance between this hand pose
 			//  and the current-ish state of our real hand.
 
-			const shape = shapes[ i ]
+			const pose = poses[ i ]
 
 
-			//  Currently we have two methods for detecting shapes.
+			//  Currently we have two methods for detecting poses.
 			// (Down from FOUR in a previous iteration! Sadly,
 			//  the angles between wrist quaternion and digit tip
 			//  weren’t sufficient once we added all of ASL.)
@@ -808,13 +841,13 @@ Object.assign( Handy.protos, {
 				
 				hand.searchResultsBuffer.push({
 
-					shape,
-					distance: shape.digitTipPositions
+					pose,
+					distance: pose.digitTipPositions
 					.reduce( function( distance, digitTipPosition, i ){
 
 						if( digitTipPosition.length !== undefined && 
-							hand.liveShapeData.digitTipPositions[ i ] !== undefined &&
-							hand.liveShapeData.digitTipPositions[ i ].length > 0 ){
+							hand.livePoseData.digitTipPositions[ i ] !== undefined &&
+							hand.livePoseData.digitTipPositions[ i ].length > 0 ){
 
 
 							//  The “correct” way to do this is to take the square root
@@ -824,9 +857,9 @@ Object.assign( Handy.protos, {
 
 							distance += //Math.sqrt(
 
-								Math.pow( digitTipPosition[ 0 ] - hand.liveShapeData.digitTipPositions[ i ][ 0 ], 2 ) +
-								Math.pow( digitTipPosition[ 1 ] - hand.liveShapeData.digitTipPositions[ i ][ 1 ], 2 ) +
-								Math.pow( digitTipPosition[ 2 ] - hand.liveShapeData.digitTipPositions[ i ][ 2 ], 2 )
+								Math.pow( digitTipPosition[ 0 ] - hand.livePoseData.digitTipPositions[ i ][ 0 ], 2 ) +
+								Math.pow( digitTipPosition[ 1 ] - hand.livePoseData.digitTipPositions[ i ][ 1 ], 2 ) +
+								Math.pow( digitTipPosition[ 2 ] - hand.livePoseData.digitTipPositions[ i ][ 2 ], 2 )
 							//)
 						}
 						return distance
@@ -838,13 +871,13 @@ Object.assign( Handy.protos, {
 
 				hand.searchResultsBuffer.push({
 
-					shape,
-					distance: shape.jointPositions
+					pose,
+					distance: pose.jointPositions
 					.reduce( function( distance, jointPosition, i ){
 
 						if( jointPosition.length !== undefined && 
-							hand.liveShapeData.jointPositions[ i ] !== undefined &&
-							hand.liveShapeData.jointPositions[ i ].length > 0 ){
+							hand.livePoseData.jointPositions[ i ] !== undefined &&
+							hand.livePoseData.jointPositions[ i ].length > 0 ){
 
 
 							//  The “correct” way to do this is to take the square root
@@ -854,9 +887,9 @@ Object.assign( Handy.protos, {
 
 							distance += //Math.sqrt(
 
-								Math.pow( jointPosition[ 0 ] - hand.liveShapeData.jointPositions[ i ][ 0 ], 2 ) +
-								Math.pow( jointPosition[ 1 ] - hand.liveShapeData.jointPositions[ i ][ 1 ], 2 ) +
-								Math.pow( jointPosition[ 2 ] - hand.liveShapeData.jointPositions[ i ][ 2 ], 2 )
+								Math.pow( jointPosition[ 0 ] - hand.livePoseData.jointPositions[ i ][ 0 ], 2 ) +
+								Math.pow( jointPosition[ 1 ] - hand.livePoseData.jointPositions[ i ][ 1 ], 2 ) +
+								Math.pow( jointPosition[ 2 ] - hand.livePoseData.jointPositions[ i ][ 2 ], 2 )
 							//)
 						}
 						return distance
@@ -867,7 +900,7 @@ Object.assign( Handy.protos, {
 
 
 			//  Let’s keep track of how many loops it’s taking
-			//  to finish searching through our whole shapes library;
+			//  to finish searching through our whole poses library;
 			//  accessible with something like:
 			//  Handy.hands.getLeft().searchLoopsCounterMax
 
@@ -881,7 +914,7 @@ Object.assign( Handy.protos, {
 
 			//  Are we done? (If so, shut it down.)
 
-			if( i === shapes.length - 1 ){
+			if( i === poses.length - 1 ){
 
 				hand.searchResults = hand.searchResultsBuffer
 				.sort( function( a, b ){
@@ -893,14 +926,14 @@ Object.assign( Handy.protos, {
 
 				//   Does this search result differ from the previous one?
 
-				if( hand.lastSearchResult.shape !== searchResult.shape ){
+				if( hand.lastSearchResult.pose !== searchResult.pose ){
 
-					if( hand.lastSearchResult && hand.lastSearchResult.shape ){
+					if( hand.lastSearchResult && hand.lastSearchResult.pose ){
 
 
 						//  Fire custom events.
 						//  We need to fire events for each name
-						//  that is associated with this shape.
+						//  that is associated with this pose.
 						//  Why would there be multiple names??
 						//  For example, “ASL_2” is the same as “Peace”.
 						//  Someone unfamiliar with American Sign Language
@@ -908,24 +941,24 @@ Object.assign( Handy.protos, {
 						//  ought to have that convenience.
 						// (And the other way ’round as well!)
 
-						hand.lastSearchResult.shape.names
-						.forEach( function( shapeName ){
+						hand.lastSearchResult.pose.names
+						.forEach( function( poseName ){
 
 							hand.dispatchEvent({
 
-								type: shapeName +' shape ended', 
+								type: poseName +' pose ended', 
 								hand,
-								shape:    hand.lastSearchResult.shape,
+								pose: hand.lastSearchResult.pose,
 								
 
 								//  Open question here:
-								//  Should this “distance” property be from this shape’s
+								//  Should this “distance” property be from this pose’s
 								//  previous top-result status (as it is currently)
 								//  or should it be from its new not-top-result status?
 	
 								distance: hand.lastSearchResult.distance,
 								message:  hand.handedness.toUpperCase() +
-									' hand “'+ shapeName +'” shape ended'+
+									' hand “'+ poseName +'” pose ended'+
 									' at a Euclidean distance of '+ hand.lastSearchResult.distance +'mm.'
 							})
 						})
@@ -937,30 +970,30 @@ Object.assign( Handy.protos, {
 
 						hand.dispatchEvent({
 
-							type: 'shape changed', 
+							type: 'pose changed', 
 							hand,
 							resultWas: hand.lastSearchResult,
 							resultIs:  searchResult,
 							message:   hand.handedness.toUpperCase() +
-								' hand shape changed from '+ 
-								JSON.stringify( hand.lastSearchResult.shape.names ) +
+								' hand pose changed from '+ 
+								JSON.stringify( hand.lastSearchResult.pose.names ) +
 								' to '+ 
-								JSON.stringify( searchResult.shape.names ) +'.'
+								JSON.stringify( searchResult.pose.names ) +'.'
 						})
 					}
 					
 
-					searchResult.shape.names
-					.forEach( function( shapeName ){
+					searchResult.pose.names
+					.forEach( function( poseName ){
 
 						hand.dispatchEvent({
 
-							type: shapeName +' shape began', 
+							type: poseName +' pose began', 
 							hand,
-							shape:    searchResult.shape,
+							pose:     searchResult.pose,
 							distance: searchResult.distance,
 							message:  hand.handedness.toUpperCase() +
-								' hand “'+ shapeName +'” shape began'+
+								' hand “'+ poseName +'” pose began'+
 								' at a Euclidean distance of '+ searchResult.distance +'mm.'
 						})
 					})
@@ -974,7 +1007,7 @@ Object.assign( Handy.protos, {
 				}
 				else {
 
-					// console.log( 'Same handshape as last time' )
+					// console.log( 'Same hand pose as last time' )
 				}
 				
 
@@ -1005,7 +1038,7 @@ Object.assign( Handy.protos, {
 					- hand.searchLoopBeganAt 
 					> Handy.searchLoopDurationLimit ){
 
-					hand.findShapeIndex = i + 1
+					hand.findPoseIndex = i + 1
 					break
 				}
 			}
@@ -1013,10 +1046,10 @@ Object.assign( Handy.protos, {
 	},
 
 
-	//  If the shape is the top search result
+	//  If the pose is the top search result
 	// (or it’s in the results list above a given distance threshold)
 	//  return the result itself so it includes 
-	//  all of the shape data as well as distance.
+	//  all of the pose data as well as distance.
 	//  Otherwise return false.
 
 	//  NOTE: This “threshold” argument is tricky
@@ -1024,7 +1057,7 @@ Object.assign( Handy.protos, {
 	//  from the recorded model.
 	//  But we might need NORMALIZED results instead.
 
-	isShape: function( shapeName, threshold ){
+	isPose: function( poseName, threshold ){
 
 		const hand = this
 		if( typeof threshold === 'number' ){
@@ -1035,14 +1068,14 @@ Object.assign( Handy.protos, {
 				return (
 
 					result.distance <= threshold &&
-					result.shape.names.includes( shapeName )
+					result.pose.names.includes( poseName )
 				)
 			})
 			return result ? result : false
 		}
 		else if( hand.searchResults.length ){
 
-			return hand.searchResults[ 0 ].shape.names.includes( shapeName ) ?
+			return hand.searchResults[ 0 ].pose.names.includes( poseName ) ?
 				hand.searchResults[ 0 ] :
 				false
 		}
@@ -1054,23 +1087,23 @@ Object.assign( Handy.protos, {
 
 	//  Some leftover debugging functions.
 
-	compareShapes: function( shapeAName, shapeBName ){
+	comparePoses: function( poseAName, poseBName ){
 
 		const 
 		hand = this,
-		shapesList = Handy.shapes[ hand.handedness ],
-		shapeA = shapesList.find( function( shape ){ return shape.name === shapeAName }),
-		shapeB = shapesList.find( function( shape ){ return shape.name === shapeBName })
+		posesList = Handy.poses[ hand.handedness ],
+		poseA = posesList.find( function( pose ){ return pose.name === poseAName }),
+		poseB = posesList.find( function( pose ){ return pose.name === poseBName })
 		
 		let
-		shapeDistanceAbs = 0,
-		shapeDistanceSqr = 0
+		poseDistanceAbs = 0,
+		poseDistanceSqr = 0
 
-		for( let i = 0; i < shapeA.positions.length; i ++ ){
+		for( let i = 0; i < poseA.positions.length; i ++ ){
 
 			const 
-			positionA = shapeA.positions[ i ],
-			positionB = shapeB.positions[ i ],
+			positionA = poseA.positions[ i ],
+			positionB = poseB.positions[ i ],
 			jointDistanceAbs = 
 				Math.abs( positionA[ 0 ] - positionB[ 0 ]) +
 				Math.abs( positionA[ 1 ] - positionB[ 1 ]) +
@@ -1091,31 +1124,31 @@ Object.assign( Handy.protos, {
 			// 	'\nAbs distance:', jointDistanceAbs,
 			// )
 
-			shapeDistanceAbs += jointDistanceAbs
-			shapeDistanceSqr += jointDistanceSqr
+			poseDistanceAbs += jointDistanceAbs
+			poseDistanceSqr += jointDistanceSqr
 		}
 		console.log( 
 
-			'\nThe distance between', shapeAName, 'and', shapeBName, 'is', 
-			'\nAbs:', shapeDistanceAbs, 
-			'\nSqr:', shapeDistanceSqr, 
+			'\nThe distance between', poseAName, 'and', poseBName, 'is', 
+			'\nAbs:', poseDistanceAbs, 
+			'\nSqr:', poseDistanceSqr, 
 			'\n\n'
 		)
-		return shapeDistanceSqr
+		return poseDistanceSqr
 	},
-	compareAllTo: function( inputShape ){
+	compareAllTo: function( inputPose ){
 		
 		const
 		hand = this,
-		shapesList = Handy.shapes[ hand.handedness ]
+		posesList = Handy.poses[ hand.handedness ]
 
-		return shapesList
-		.reduce( function( list, shape ){ 
+		return posesList
+		.reduce( function( list, pose ){ 
 
 			return list.concat({ 
 
-				name: shape.name, 
-				distance: hands.left.compareShapes( 'Fist', shape.name )
+				name: pose.name, 
+				distance: hands.left.comparePoses( 'Fist', pose.name )
 			})
 
 		}, [])
@@ -1137,11 +1170,11 @@ Object.assign( Handy.protos, {
 	////////////////
 
 
-	//  Did you add a shape name to the Handy.shapeNames Array?
+	//  Did you add a pose name to the Handy.poseNames Array?
 	//  Did you also define a check function for it?
 	//  If so, this function -- which you must remember to call 
 	//  from within your update loop -- will check the status 
-	//  of each shape, set the boolean flags accordingly,
+	//  of each pose, set the boolean flags accordingly,
 	//  and fire off events on the frame when the state changes.
 
 	update: function( callback ){
@@ -1149,7 +1182,7 @@ Object.assign( Handy.protos, {
 		const hand = this
 
 
-		//  If we’re displaying hand shape + finger data 
+		//  If we’re displaying hand pose + finger data 
 		// (angle˚, distance, isExtended, isContracted)
 		//  and there is existing joint data to use...
 
@@ -1191,9 +1224,9 @@ Object.assign( Handy.protos, {
 
 			let displayString = handedness
 			if( hand.searchResults.length &&
-				hand.searchResults[ 0 ].shape ){
+				hand.searchResults[ 0 ].pose ){
 
-				displayString += '\n'+ hand.searchResults[ 0 ].shape.names
+				displayString += '\n'+ hand.searchResults[ 0 ].pose.names
 				.reduce( function( names, name, i ){
 
 					if( i ) names += ', '
@@ -1243,7 +1276,7 @@ export { Handy }
 	 to rectify my passion (and monetization) of the aural
 	 and the visual within these contexts. Do I need to?
 
-	 But something about defining hand shapes for virtual reality
+	 But something about defining hand poses for virtual reality
 	 experiences has tripped a small alarm within me. Not everyone
 	 has two hands. Not everyone has five digits on each hand.
 	 The wonder I experience at traversing the threshold from the

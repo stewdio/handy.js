@@ -6,17 +6,24 @@
 
 👉 Handy.js 👈
 ========================================================================
-Want to add hand shape recognition to your 
+Want to add hand pose recognition to your 
 [WebXR](https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API) 
-project? **Handy** makes defining and recognizing custom hand shapes a 
+project? **Handy** makes defining and recognizing custom hand poses a 
 snap! Why use hand-held controllers when you can use your bare hands? 👋
 Built on [Three.js](https://threejs.org/) and tested on the 
 [Oculus Quest](https://www.oculus.com/quest/), **Handy** recognizes 
-over 100 hand shapes right out of the box—including the 
+over 100 hand poses right out of the box—including the 
 [American Sign Language (ASL) alphabet](https://en.wikipedia.org/wiki/American_Sign_Language).
 
+**_WARNING_**.  
+A recent change to the 
+[WebXR Hands API](https://immersive-web.github.io/webxr-hand-input/) 
+has _temporarily_ broken **Handy**. See this issue for more details: 
+https://github.com/stewdio/handy.js/issues/4
+I expect this to be resolved before the end of June 2021.
+
 **Explore the demo**.
-👉 Make your hand into a “finger gun” shape, then tap your thumb down 
+👉 Make your hand into a “finger gun” pose, then tap your thumb down 
 onto your middle finger to shoot lasers from your hand. ✊ Make a fist
 to cycle through different hand model visual styles. ✌️ Make a “peace 
 sign” to toggle the hand-specific colors—red for right, green for left.
@@ -25,11 +32,11 @@ This demo is live at
 and the open-source code repository is available at
 [https://github.com/stewdio/handy.js](https://github.com/stewdio/handy.js).  
   
-**Shape vs. Gesture**. 
-You may notice we use the term “hand shape” rather than “hand gesture”
+**Pose vs. Gesture**. 
+You may notice we use the term “hand pose” rather than “hand gesture”
 and that’s because “gesture” implies movement over time and a spatial
 relationship to the body or other objects. Right now **Handy** is 
-primarily concerned with the basic shape of a hand’s configuration.
+primarily concerned with the basic pose of a hand’s configuration.
 But it’s still early days—and yes, full hand gesture recognition is on 
 the roadmap 👍  
   
@@ -49,7 +56,7 @@ example](https://threejs.org/examples/#webxr_vr_handinput_profiles) and
 its [source 
 code](https://github.com/mrdoob/three.js/blob/master/examples/webxr_vr_handinput_profiles.html)
 for details.) But Three doesn’t include an easy way to define and listen
-for hand shapes.  Here’s how easy it is to “Handify” an 
+for hand poses.  Here’s how easy it is to “Handify” an 
 existing Three.js hand input example:
 
 ```javascript
@@ -88,24 +95,24 @@ And that’s it. You’re good to go 👍
   
   
   
-How to: Listen for hand shapes
+How to: Listen for hand poses
 ------------------------------------------------------------------------
-**Handy** provides an `isShape` method on each hand which expects a
-shape name as an argument. It returns `false` if the live hand data does
-not most resemble that shape, or returns a search result object (which 
-includes a reference to the shape definition data as well a `distance` 
+**Handy** provides an `isPose` method on each hand which expects a
+pose name as an argument. It returns `false` if the live hand data does
+not most resemble that pose, or returns a search result object (which 
+includes a reference to the pose definition data as well a `distance` 
 property representing the 
 [Euclidean distance](https://en.wikipedia.org/wiki/K-means_clustering))
-if the live hand data does indeed most resemble the indicated shape.
+if the live hand data does indeed most resemble the indicated pose.
 
 ```javascript
 
-const isPeace = handLeft.isShape( 'peace' )
+const isPeace = handLeft.isPose( 'peace' )
 if( isPeace ){
 
 	//  Do something the entire time
 	//  that our hand most resembles
-	//  a “peace” shape.
+	//  a “peace” pose.
 
 	//  For example, let’s log
 	//  the Euclidean distance
@@ -120,16 +127,16 @@ if( isPeace ){
 An optional second argument, a
 [Euclidean distance](https://en.wikipedia.org/wiki/K-means_clustering)
 threshold, follows a similar pattern as above, but does not require
-that the shape be the top search result. Instead the shape must be
+that the pose be the top search result. Instead the pose must be
 closer than the supplied distance threshold.
 
 ```javascript
 
-if( handLeft.isShape( 'peace', 3000 )){
+if( handLeft.isPose( 'peace', 3000 )){
 
 	//  Do something the entire time
 	//  that our hand resembles
-	//  a “peace” shape
+	//  a “peace” pose
 	//  within a Euclidean distance of
 	//  less than or equal to 3,000 millimeters.
 }
@@ -139,26 +146,26 @@ if( handLeft.isShape( 'peace', 3000 )){
   
   
 **Handy** also fires events on the handified object itself to inform you
-the moment a shape appears or vanishes. 
+the moment a pose appears or vanishes. 
 
 ```javascript
 
 handLeft.addEventListener( 
 
-	'peace shape began', 
+	'peace pose began', 
 	 function( event ){
 
 		//  Do something when the
-		// “peace” shape appears.
+		// “peace” pose appears.
 	}
 )
 handLeft.addEventListener(
 
-	'peace shape ended',
+	'peace pose ended',
 	 function( event ){
 
 		//  Do something when the
-		// “peace” shape vanishes.
+		// “peace” pose vanishes.
 	}
 )
 
@@ -169,12 +176,12 @@ The content of the passed `event` argument is:
 ```javascript
 
 {
-	type,    //  Event name, eg. “peace shape began”.
+	type,    //  Event name, eg. “peace pose began”.
 	hand,    //  Hand object itself.
-	shape,   //  Shape definition data.
-	distance,//  Euclidean distance between live hand shape and this shape.
+	pose,    //  Pose definition data.
+	distance,//  Euclidean distance between live hand pose and this pose.
 	message  //  A human-readable description of the event, 
-	         //  eg. “LEFT hand peace shape began”.
+	         //  eg. “LEFT hand peace pose began”.
 }
 
 
@@ -183,7 +190,7 @@ The content of the passed `event` argument is:
   
   
   
-How to: Record your own hand shapes
+How to: Record your own hand poses
 ------------------------------------------------------------------------
 1. First, you will need to enable remote debugging for your Oculus Quest.
 See [Oculus’ guide to enabling remote 
@@ -196,27 +203,27 @@ example, this demo declares `window.Handy = Handy`.
 
 3. Now from your [JavaScript 
 console](https://developers.google.com/web/tools/chrome-devtools/console/javascript)
-you can record a new shape with something similar to the following:
-`Handy.hands.getLeft().recordLiveShape( 'my shape name' )`. This will 
-output a shape definition as a [JSON 
+you can record a new pose with something similar to the following:
+`Handy.hands.getLeft().recordLivePose( 'my pose name' )`. This will 
+output a pose definition as a [JSON 
 string](https://en.wikipedia.org/wiki/JSON) to your console that you 
-can then paste into your shape definitions file. For this demo the 
-appropriate location would be `./scripts/Handy-shapes-left.js`.
-This command will _also_ add the shape into that hand’s shape library 
-immediately—so your code can make use of that new hand shape in the 
+can then paste into your pose definitions file. For this demo the 
+appropriate location would be `./scripts/Handy-poses-left.js`.
+This command will _also_ add the pose into that hand’s pose library 
+immediately—so your code can make use of that new hand pose in the 
 very next `hand.search()` call.  
   
 **Example**
 ```javascript
 
-//  Shape your left hand into the Vulcan
+//  Pose your left hand into the Vulcan
 // “Live long and prosper” salute,
 //  then hit enter on the following in your console:
 
-Handy.hands.getLeft().recordLiveShape( 'vulcan' )
+Handy.hands.getLeft().recordLivePose( 'vulcan' )
 
 
-//  Handy will return a snapshot of the shape.
+//  Handy will return a snapshot of the pose.
 //  Note that the position measurements are in millimeters
 //  relative to the wrist joint position.
 
@@ -225,10 +232,10 @@ Handy.hands.getLeft().recordLiveShape( 'vulcan' )
 
 ````
   
-Note that the `names` property of a shape definition is an Array. One 
-shape can have many names. Multiple shapes can share the same name. 
+Note that the `names` property of a pose definition is an Array. One 
+pose can have many names. Multiple poses can share the same name. 
 **Handy** is quite flexible and will automatically create all of the 
-necessary `began`, `ended`, and `changed` events for whatever shapes 
+necessary `began`, `ended`, and `changed` events for whatever poses 
 you provide it.
   
   
@@ -238,7 +245,7 @@ Known issues
 ------------------------------------------------------------------------
 Oculus Quest has trouble with digit overlaps as illustrated by the 
 [American Sign Language (ASL)](https://en.wikipedia.org/wiki/American_Sign_Language)
-shapes for **M**, **N**, **R**, **T**, **X**, and so on. This is a 
+poses for **M**, **N**, **R**, **T**, **X**, and so on. This is a 
 limitation of the tracking on Oculus’ side so there’s not much we can 
 do about that for the moment. Take heart though: the folks over at 
 Oculus have been making huge strides in what is a difficult technology 
@@ -273,13 +280,13 @@ preceding object.
 
 	hand.addEventListener( 
 
-		'peace shape began', 
-		 onPeaceShapeBegan
+		'peace pose began', 
+		 onPeacePoseBegan
 	)
 	hand.addEventListener(
 
-		'peace shape ended',
-		 onPeaceShapeEnded
+		'peace pose ended',
+		 onPeacePoseEnded
 	)
 })
 

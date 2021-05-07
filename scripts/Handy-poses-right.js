@@ -1,5 +1,5 @@
 
-//  Copyright © 2020 Stewart Smith. See LICENSE for details.
+//  Copyright © 2020–2021 Stewart Smith. See LICENSE for details.
 
 
 
@@ -8,7 +8,7 @@
 //  as illustrated by American Sign Language (ASL)
 //  for M, N, R, T, X etc.
 
-const shapes = [
+const poses = [
 
 
 
@@ -51,7 +51,7 @@ const shapes = [
 {"names":["crook only little"],"handedness":"right","handyRevision":4,"time":1598358563927,"headPosition":[2637,-1722,5034],"headRotation":[-3.700743415417188e-17,0,0,1],"jointPositions":[[0,0,0],[-33,-12,32],[-53,-18,56],[-79,-23,78],[-90,-24,100],[-41,-9,16],[-96,-7,24],[-133,-11,28],[-157,-17,31],[-179,-17,32],[-41,-9,3],[-96,-3,2],[-138,-7,0],[-166,-11,-1],[-190,-8,-3],[-38,-9,-8],[-89,-7,-17],[-125,-16,-27],[-150,-24,-33],[-172,-34,-37],[-34,-9,-23],[-78,-14,-35],[-104,-25,-46],[-103,-44,-39],[-97,-60,-25]],"digitTipPositions":[[-90,-24,100],[-179,-17,32],[-190,-8,-3],[-172,-34,-37],[-97,-60,-25]]},
 
 
-//  Note that this shape only contains thumb and index positions.
+//  Note that this pose only contains thumb and index positions.
 //  Right now it’s “too close” to Rest...
 /*
 {"names":["Pinch"],"handedness":"left","handyRevision":4,"time":1597940692048,"headPosition":[-938,-443,-5899],"headRotation":[-3.700743415417188e-17,0,0,1],"jointPositions":[[0,0,0],[36,19,-28],[51,44,-43],[74,68,-39],[90,82,-26],[41,9,-16],[96,7,-24],[114,41,-25],[104,63,-22],[90,80,-17]],"digitTipPositions":[[90,82,-26],[90,80,-17],[177,52,3],[173,36,24],[144,19,65]]},
@@ -159,4 +159,4 @@ const shapes = [
 
 
 ]
-export { shapes }
+export { poses }

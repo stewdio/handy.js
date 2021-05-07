@@ -1,5 +1,5 @@
 
-//  Copyright © 2020 Stewart Smith. See LICENSE for details.
+//  Copyright © 2020–2021 Stewart Smith. See LICENSE for details.
 
 
 
@@ -234,9 +234,9 @@ function setupHands(){
 	const 
 	controllerModelFactory = new XRControllerModelFactory(),
 	[ controllerGrip0, controllerGrip1 ] = [ {}, {} ]
-	.map( function( controllerGrip ){
+	.map( function( controllerGrip, i ){
 
-		controllerGrip = renderer.xr.getControllerGrip( 0 )
+		controllerGrip = renderer.xr.getControllerGrip( i )
 		controllerGrip.add( controllerModelFactory.createControllerModel( controllerGrip ))
 		scene.add( controllerGrip )
 
@@ -312,7 +312,7 @@ function setupHands(){
 
 
 
-		//  This is what makes detecting hand shapes easy!
+		//  This is what makes detecting hand poses easy!
 
 		Handy.makeHandy( hand )
 
@@ -347,33 +347,34 @@ function setupHands(){
 
 
 		//  Speaking of events, here’s how easy it is
-		//  to listen to our custom hand shapes.
+		//  to listen to our custom hand poses.
 		//  Make a fist to change hand visual style.
 
-		hand.addEventListener( 'fist shape began', cycleHandModel )
+		hand.addEventListener( 'fist pose began', cycleHandModel )
 
 
 		//  Let’s trigger a glove color change
-		//  when we make a “peace” shape.
+		//  when we make a “peace” pose.
 		//  Funny thing about peace -- most folks 
-		//  hold this shape like an ASL 2.
+		//  hold this pose like an ASL 2.
 		//  But its etymology coincides with ASL V.
 		//  So we’ve labeled BOTH 2 and V as “peace”.
 		//  One way to account for that is to use
-		//  the “shape changed” event
-		//  and check shapeIs and shapeWas to confirm
-		//  we’ve only just switched to a “peace” shape.
+		//  the “pose changed” event
+		//  and check poseIs and poseWas to confirm
+		//  we’ve only just switched to a “peace” pose.
 
 		//  This is also a useful event listener for debugging.
 		//  The event.message property will display the “names” Array
-		//  for both the currently detected shape and the prior one.
+		//  for both the currently detected pose and the prior one.
 
-		hand.addEventListener( 'shape changed', function( event ){
+		hand.addEventListener( 'pose changed', function( event ){
 
-			// console.log( event.message )
-			if( event.resultIs.shape.names.includes( 'peace' ) &&
-				!event.resultWas.shape.names.includes( 'peace' )){
+			console.log( event.message )
+			if( event.resultIs.pose.names.includes( 'peace' ) &&
+				!event.resultWas.pose.names.includes( 'peace' )){
 
+				console.log( 'Changing hand color for', hand.handedness )
 				hand.checkHandedness()
 				hand.traverse( function( obj ){
 
@@ -475,8 +476,8 @@ function setupContent() {
 	)
 
 	
-	//  In Three.js all flat 2D shapes are drawn vertically.
-	//  This means that for any 2D shape 
+	//  In Three.js all flat 2D poses are drawn vertically.
+	//  This means that for any 2D pose 
 	//  that we’d like to use as a floor,
 	//  we  must rotate it 90 degrees (π ÷ 2 radians)
 	//  so that it is horizontal rather than vertical.
@@ -583,7 +584,7 @@ function loop( timeNow, frame ){
 
 	Handy.update( function( hand ){
 
-		if( hand.isShape( 'fire point', 3000 )){
+		if( hand.isPose( 'fire point', 3000 )){
 
 
 			//  Bolt comes from my original “Space Rocks” (2017) WebVR demo.
