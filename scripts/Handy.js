@@ -21,8 +21,8 @@
 
 import { poses as posesLeft  } from './Handy-poses-left.js'
 import { poses as posesRight } from './Handy-poses-right.js'
-import * as THREE from './third-party/Three/three.module.js'
-import { SurfaceText } from './third-party/SpaceRocks/SurfaceText.js'
+import * as THREE from '../vendor/Three/scripts/three.module.js'
+import { SurfaceText } from '../vendor/Moar/scripts/SurfaceText.js'
 
 
 

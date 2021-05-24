@@ -2,7 +2,7 @@
 //  Copyright © 2017, 2018, 2020 Moar Technologies Corp. See LICENSE for details.
 
 
-import * as THREE from '../Three/three.module.js'
+import * as THREE from '../../Three/scripts/three.module.js'
 
 
 

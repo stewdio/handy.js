@@ -18,16 +18,15 @@
 //  for the simplest examples. Such is progress?
 //  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
-import * as THREE from './third-party/Three/three.module.js'
-import { OrbitControls } from './third-party/Three/OrbitControls.js'
-import { VRButton } from './third-party/Three/VRButton.js'
-import { XRControllerModelFactory } from './third-party/Three/XRControllerModelFactory.js';
-import { XRHandModelFactory } from './third-party/Three/XRHandModelFactory.js'
-import { XRHandPrimitiveModel } from './third-party/Three/XRHandPrimitiveModel.js'
-import { Lensflare, LensflareElement } from './third-party/Three/Lensflare.js'
-import { Bolt } from './third-party/SpaceRocks/Bolt.js'
+import * as THREE from '../vendor/Three/scripts/three.module.js'
+import { OrbitControls } from '../vendor/Three/scripts/OrbitControls.js'
+import { VRButton } from '../vendor/Three/scripts/VRButton.js'
+import { XRControllerModelFactory } from '../vendor/Three/scripts/XRControllerModelFactory.js'
+import { XRHandModelFactory } from '../vendor/Three/scripts/XRHandModelFactory.js'
+import { Lensflare, LensflareElement } from '../vendor/Three/scripts/Lensflare.js'
+import { Bolt } from '../vendor/Moar/scripts/Bolt.js'
 import { Handy } from './Handy.js'
-import Stats from './third-party/Three/stats.module.js'
+import Stats from '../vendor/Three/scripts/stats.module.js'
 
 
 
@@ -427,7 +426,7 @@ function setupContent() {
 	//  https://threejs.org/docs/#api/en/loaders/Loader
 
 	const background = new THREE.CubeTextureLoader()
-	.setPath( 'media/milkyway/' )
+	.setPath( 'vendor/Three/media/milkyway/' )
 	.load([ 
 
 		'dark-s_px.jpg', 
@@ -553,8 +552,8 @@ function setupContent() {
 
 	const 
 	loader    = new THREE.TextureLoader(),
-	texture0  = loader.load( 'media/lensflare/lensflare0.png' ),
-	texture3  = loader.load( 'media/lensflare/lensflare3.png' ),
+	texture0  = loader.load( 'vendor/Three/media/lensflare/lensflare0.png' ),
+	texture3  = loader.load( 'vendor/Three/media/lensflare/lensflare3.png' ),
 	lensflare = new Lensflare()
 
 	lensflare.position.copy( light.position )
