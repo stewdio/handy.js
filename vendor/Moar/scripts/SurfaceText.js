@@ -78,7 +78,8 @@ function SurfaceText( options ){
 		else y = ( options.canvas.height / 2 ) - ( lineHeight * lines.length / 2 )
 
 		context.clearRect( 0, 0, canvas.width, canvas.height )
-		// context.fillStyle = options.style.fillStyle// Why does Three clobber this?!
+		context.fillStyle = options.style.fillStyle// Why does Three clobber this?!
+		// context.fillRect( 0, 0, canvas.width, canvas.height )		
 		for( let i = 0; i < lines.length; i ++ ){
 
 			context.fillText( lines[ i ], options.x, y + i * lineHeight )

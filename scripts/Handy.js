@@ -216,6 +216,8 @@ const Handy = {
 
 	makeHandy: function( obj ){
 
+		obj.name = 'hand'
+
 
 		//  We need to find the THREE camera used for this scene
 		//  in order to have our data display frames 
@@ -268,7 +270,7 @@ const Handy = {
 			}
 		})
 		obj.displayFrameAnchor.add( obj.displayFrame )
-		obj.displayFrame.visible = false
+		obj.displayFrame.visible = true//false
 
 
 		//  Glob on the methods. No classes required :)
@@ -282,7 +284,7 @@ const Handy = {
 		})
 
 
-		//  Let’s keep a list of hall handified objects
+		//  Let’s keep a list of all handified objects
 		//  which down the road will allow us to detect interactions
 		//  like claps, time freeze, picture framing, etc.
 
@@ -365,6 +367,7 @@ Object.assign( Handy.protos, {
 				obj.xrInputSource.handedness !== undefined ){
 
 				hand.handedness = obj.xrInputSource.handedness
+				hand.name = 'hand '+ hand.handedness			
 			}
 		})
 		return this.handedness
@@ -1187,10 +1190,10 @@ Object.assign( Handy.protos, {
 		//  and there is existing joint data to use...
 
 		if( hand.displayFrame.visible === true && 
-			hand.joints[ 0 ] &&
-			hand.joints[ 0 ].position ){
+			hand.joints[ 'wrist' ] &&
+			hand.joints[ 'wrist' ].position ){
 
-			const wrist = hand.joints[ 0 ]
+			const wrist = hand.joints[ 'wrist' ]
 			hand.displayFrameAnchor.position.copy( wrist.position )
 			hand.displayFrameAnchor.quaternion.copy( wrist.quaternion )
 
@@ -1199,7 +1202,6 @@ Object.assign( Handy.protos, {
 			//  displayFrame should actually ORBIT the wrist at a fixed radius
 			//  and always choose the orbit degree that faces the camera.
 			
-
 			let handedness = hand.handedness
 			if( handedness === 'left' || handedness === 'right' ){
 
@@ -1211,16 +1213,14 @@ Object.assign( Handy.protos, {
 			}
 			if( handedness === 'LEFT' ){
 
-				hand.displayFrame.position.set( 0, 0.02, -0.07 )
-				hand.displayFrame.rotation.x = Math.PI * 1.3
-				hand.displayFrame.rotation.z = Math.PI / -2
+				hand.displayFrame.position.set( 0.06, -0.05, 0.02 )
 			}
 			if( handedness === 'RIGHT' ){
 
-				hand.displayFrame.position.set( 0, -0.02, 0.07 )
-				hand.displayFrame.rotation.x = Math.PI * 0.3
-				hand.displayFrame.rotation.z = Math.PI / 2
+				hand.displayFrame.position.set( -0.06, -0.05, 0.02 )
 			}
+			hand.displayFrame.rotation.x = Math.PI / -2
+			hand.displayFrame.rotation.y = Math.PI
 
 			let displayString = handedness
 			if( hand.searchResults.length &&

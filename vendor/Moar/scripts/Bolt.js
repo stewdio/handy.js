@@ -10,6 +10,10 @@ import * as THREE from '../../Three/scripts/three.module.js'
 // import Explosion  from './Explosion.js'
 
 
+
+
+//  Patch for Handy.js demo. 
+
 const 
 player = {
 
@@ -18,7 +22,7 @@ player = {
 },
 settings = {
 
-	radiusWrap: 300//meters
+	radiusWrap: 300// meters.
 },
 three = {
 
@@ -78,7 +82,8 @@ function Bolt( controller ){
 
 	const now = Date.now()
 	if( controller.lastBoltFiredAt === undefined ) controller.lastBoltFiredAt = 0
-	if( now - controller.lastBoltFiredAt < 130 ) return false
+	// if( now - controller.lastBoltFiredAt < 130 ) return false
+	if( now - controller.lastBoltFiredAt < 100 ) return false
 	controller.lastBoltFiredAt = now
 
 	
@@ -120,7 +125,9 @@ function Bolt( controller ){
 		.getWorldDirection( new THREE.Vector3() )
 		.normalize()
 	
+	this.isFirstFrame = true 
 	
+
 	//  This will be used by our raycaster in update()
 	//  so we’ll set it only once here
 	//  and reuse it in each update loop.
@@ -350,15 +357,22 @@ Object.assign( Bolt, {
 
 			else {
 			*/
-				Bolt.mesh.setMatrixAt( i, 
-					
-					bolt.matrix.setPosition( 
+				if( bolt.isFirstFrame ){
+
+					bolt.isFirstFrame = false
+				}
+				else {
+
+					Bolt.mesh.setMatrixAt( i, 
 						
-						bolt.position
-						.setFromMatrixPosition( bolt.matrix )
-						.add( positionDelta ) 
+						bolt.matrix.setPosition( 
+							
+							bolt.position
+							.setFromMatrixPosition( bolt.matrix )
+							.add( positionDelta ) 
+						)
 					)
-				)
+				}
 				i ++
 			// }
 		}

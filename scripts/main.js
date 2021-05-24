@@ -306,6 +306,7 @@ function setupHands(){
 			handModelFactory.createHandModel( hand, 'mesh' )
 		]
 		hand.modelIndex = 0
+		hand.isDefaultColor = true
 
 
 
@@ -582,7 +583,7 @@ function loop( timeNow, frame ){
 
 	Handy.update( function( hand ){
 
-		if( hand.isPose( 'fire point', 3000 )){
+		if( hand.isPose( 'fire point', 4000 )){
 
 
 			//  Bolt comes from my original “Space Rocks” (2017) WebVR demo.
