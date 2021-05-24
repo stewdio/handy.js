@@ -24,7 +24,7 @@ import { VRButton } from '../vendor/Three/scripts/VRButton.js'
 import { XRControllerModelFactory } from '../vendor/Three/scripts/XRControllerModelFactory.js'
 import { XRHandModelFactory } from '../vendor/Three/scripts/XRHandModelFactory.js'
 import { Lensflare, LensflareElement } from '../vendor/Three/scripts/Lensflare.js'
-import { Bolt } from '../vendor/Moar/scripts/Bolt.js'
+import Bolt from '../vendor/Moar/scripts/Bolt.js'
 import { Handy } from './Handy.js'
 import Stats from '../vendor/Three/scripts/stats.module.js'
 
@@ -206,7 +206,7 @@ function setupHands(){
 	//  and with an Array’s map() function.
 	//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 
-	const [ contoller0, controller1 ] = [ {}, {} ]
+	/*const [ contoller0, controller1 ] = [ {}, {} ]
 	.map( function( controller, i ){
 
 		controller = renderer.xr.getController( i )
@@ -221,7 +221,7 @@ function setupHands(){
 		scene.add( controller )
 
 		return controller
-	})
+	})*/
 
 
 	//  Now let’s get a little fancier.
@@ -230,7 +230,7 @@ function setupHands(){
 	// (A model will be fetched from a CDN.)
 	//  https://en.wikipedia.org/wiki/Content_delivery_network
 
-	const 
+	/*const 
 	controllerModelFactory = new XRControllerModelFactory(),
 	[ controllerGrip0, controllerGrip1 ] = [ {}, {} ]
 	.map( function( controllerGrip, i ){
@@ -240,7 +240,7 @@ function setupHands(){
 		scene.add( controllerGrip )
 
 		return controllerGrip
-	})
+	})*/
 
 
 	//  And here we go -- time for virtual reality hands!!
@@ -248,7 +248,7 @@ function setupHands(){
 	//  they’re included right in this code package.
 
 	const 
-	handModelFactory = new XRHandModelFactory().setPath( './media/hands/' ),
+	handModelFactory = new XRHandModelFactory(),
 	cycleHandModel = function( event ){
 
 		const hand = event.hand
@@ -303,8 +303,7 @@ function setupHands(){
 
 			handModelFactory.createHandModel( hand, 'boxes' ),
 			handModelFactory.createHandModel( hand, 'spheres' ),
-			handModelFactory.createHandModel( hand, 'oculus', { model: 'lowpoly' }),
-			handModelFactory.createHandModel( hand, 'oculus' )
+			handModelFactory.createHandModel( hand, 'mesh' )
 		]
 		hand.modelIndex = 0
 
@@ -527,10 +526,10 @@ function setupContent() {
 		platform.material.envMap = cubeRenderTarget.texture
 		platform.material.needsUpdate = true
 		texture.dispose()
-	})
-	*/
+	})*/
+	
 
-	//  Let there by light.
+	//  Let there be light.
 	//  Directional lights create parallel light rays.
 	//  https://threejs.org/docs/#api/en/lights/DirectionalLight
 
@@ -589,13 +588,13 @@ function loop( timeNow, frame ){
 			//  Bolt comes from my original “Space Rocks” (2017) WebVR demo.
 			//  https://spacerocks.moar.io/
 			//  Pehaps I’ll update that someday 
-			//  now that the WebXR API is finalized?
+			//  now that the WebXR API is … sort of finalized?
 
 			const bolt = new Bolt(
 
-				scene,//  The bolt must know what scene to attach itself to.
-				hand, //  Used for ‘handedness’ as well as attaching some state to.
-				hand.joints[ Handy.WRIST ]//  Reference point.
+				// scene,//  The bolt must know what scene to attach itself to.
+				// hand, //  Used for ‘handedness’ as well as attaching some state to.
+				hand.joints[ 'wrist' ]//  Reference point.
 			)
 			
 
@@ -647,6 +646,7 @@ function loop( timeNow, frame ){
 window.addEventListener( 'DOMContentLoaded', function(){
 
 	setupThree()
+	Bolt.setup( scene )
 	setupHands()
 	setupContent()
 })

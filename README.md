@@ -303,7 +303,7 @@ Quest](https://www.oculus.com/quest/) headset, though device support
 will expand as more devices implement the [WebXR hand tracking 
 API](https://immersive-web.github.io/webxr-hand-input/). 
 Be sure your Oculus Quest has all of the latest software updates 
-installed, including Oculus Browser 11.1.0.1 or later, then 
+installed, including Oculus Browser 15.3.0 or later, then 
 follow these steps to experience the demo for yourself:  
   
 1. In the main **Settings** menu

@@ -34,7 +34,7 @@ const Handy = {
 	//  I don’t have strict critera for requiring a version bump
 	//  but when something biggish changes I’ll bump this number.
 
-	REVISION: 4,
+	REVISION: 5,
 
 
 	//  The following list of joint names mirrors the constants list
