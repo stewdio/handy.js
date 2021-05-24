@@ -15,12 +15,13 @@ Built on [Three.js](https://threejs.org/) and tested on the
 over 100 hand poses right out of the box—including the 
 [American Sign Language (ASL) alphabet](https://en.wikipedia.org/wiki/American_Sign_Language).
 
-**_WARNING_**.  
-A recent change to the 
+**_UPDATE_**. May 2021. While a recent overhaul of the 
 [WebXR Hands API](https://immersive-web.github.io/webxr-hand-input/) 
-has _temporarily_ broken **Handy**. See this issue for more details: 
-https://github.com/stewdio/handy.js/issues/4
-I expect this to be resolved before the end of June 2021.
+had temporarily broken **Handy**, we are once again 100% funtional 👍
+Curious what happened? See 
+[this issue](https://github.com/stewdio/handy.js/issues/4) 
+for more details.
+
 
 **Explore the demo**.
 👉 Make your hand into a “finger gun” pose, then tap your thumb down 
