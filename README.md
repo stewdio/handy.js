@@ -17,7 +17,7 @@ over 100 hand poses right out of the box—including the
 
 **_UPDATE_**. May 2021. While a recent overhaul of the 
 [WebXR Hands API](https://immersive-web.github.io/webxr-hand-input/) 
-had temporarily broken **Handy**, we are once again 100% funtional 👍
+had temporarily broken **Handy**, we are once again 100% functional 👍
 Curious what happened? See 
 [this issue](https://github.com/stewdio/handy.js/issues/4) 
 for more details.
