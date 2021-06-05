@@ -1,5 +1,6 @@
 ![Handy.js](./media/finger-guns.gif "Handy.js finger guns")
-![Handy.js](./media/a-to-fire.gif "Handy.js ASL alphabet")  
+![Handy.js](./media/a-to-fire.gif "Handy.js ASL alphabet")
+![Handy.js](./media/finger-walk.gif "Handy.js finder-walking locomotion")  
 
 
 
