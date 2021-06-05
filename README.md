@@ -1,6 +1,7 @@
-![Handy.js](./media/finger-guns.gif "Handy.js finger guns")
-![Handy.js](./media/a-to-fire.gif "Handy.js ASL alphabet")
-![Handy.js](./media/finger-walk.gif "Handy.js finder-walking locomotion")  
+
+<img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-guns.gif" title="Handy.js finger guns" width="200">
+<img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/a-to-fire.gif" title="Handy.js ASL alphabet" width="200">  
+<img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-walk.gif" title="Handy.js finger-walking locomotion" width="200">  
 
 
 
