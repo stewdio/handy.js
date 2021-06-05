@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-guns.gif" title="Handy.js finger guns" width="200"><img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/a-to-fire.gif" title="Handy.js ASL alphabet" width="200"><img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-walk.gif" title="Handy.js finger-walking locomotion" width="200">  
+<img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-guns.gif" title="Handy.js finger guns" width="200"> <img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/a-to-fire.gif" title="Handy.js ASL alphabet" width="200"> <img src="https://raw.githubusercontent.com/stewdio/handy.js/master/media/finger-walk.gif" title="Handy.js finger-walking locomotion" width="200">  
 
 
 
