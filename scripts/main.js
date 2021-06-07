@@ -18,17 +18,15 @@
 //  for the simplest examples. Such is progress?
 //  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
-import * as THREE from '../vendor/Three/scripts/three.module.js'
-import { OrbitControls } from '../vendor/Three/scripts/OrbitControls.js'
-import { VRButton } from '../vendor/Three/scripts/VRButton.js'
-import { XRControllerModelFactory } from '../vendor/Three/scripts/XRControllerModelFactory.js'
-import { XRHandModelFactory } from '../vendor/Three/scripts/XRHandModelFactory.js'
-import { Lensflare, LensflareElement } from '../vendor/Three/scripts/Lensflare.js'
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js'
+import { XRHandModelFactory } from 'three/examples/jsm/webxr/XRHandModelFactory.js'
+import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js'
+import Stats from 'three/examples/jsm/libs/stats.module.js'
 import Bolt from '../vendor/Moar/scripts/Bolt.js'
-import { Handy } from './Handy.js'
-import Stats from '../vendor/Three/scripts/stats.module.js'
-
-
+import { Handy } from '../src/Handy.js'
+import { SurfaceText } from '../vendor/Moar/scripts/SurfaceText.js'
 
 
 
@@ -321,7 +319,36 @@ function setupHands(){
 
 		Handy.makeHandy( hand )
 
+		//  Let’s create a means for displaying 
+		//  hand and finger data right in VR!
+		//  SurfaceText returns a THREE.Mesh
+		//  with additional methods like print().
 
+		hand.displayFrameAnchor = new THREE.Object3D()
+		hand.add( hand.displayFrameAnchor )
+		hand.displayFrame = new SurfaceText({
+
+			text: 'No data',
+			canvas: {
+
+				width:  512,
+				height: 128
+			},
+			virtual: {
+
+				width:  0.20,
+				height: 0.05
+			},
+			style: {
+
+				fontFamily: 'bold monospace',
+				fontSize:   '30px',
+				textAlign:  'center',
+				fillStyle:  '#00DDFF'
+			}
+		})
+		hand.displayFrameAnchor.add( hand.displayFrame )
+		hand.displayFrame.visible = true//false
 
 
 		//  When hand tracking data becomes available
@@ -629,6 +656,62 @@ function loop( timeNow, frame ){
 				console.log( 'Shot fired!' )
 			}
 		}
+
+
+		//  If we’re displaying hand pose + finger data 
+		// (angle˚, distance, isExtended, isContracted)
+		//  and there is existing joint data to use...
+
+		if( hand.displayFrame.visible === true && 
+			hand.joints[ 'wrist' ] &&
+			hand.joints[ 'wrist' ].position ){
+
+			const wrist = hand.joints[ 'wrist' ]
+			hand.displayFrameAnchor.position.copy( wrist.position )
+			hand.displayFrameAnchor.quaternion.copy( wrist.quaternion )
+
+
+			//  TO DO:
+			//  displayFrame should actually ORBIT the wrist at a fixed radius
+			//  and always choose the orbit degree that faces the camera.
+			
+			let handedness = hand.handedness
+			if( handedness === 'left' || handedness === 'right' ){
+
+				handedness = handedness.toUpperCase()
+			}
+			else {
+
+				handedness = 'UNKNOWN'
+			}
+			if( handedness === 'LEFT' ){
+
+				hand.displayFrame.position.set( 0.06, -0.05, 0.02 )
+			}
+			if( handedness === 'RIGHT' ){
+
+				hand.displayFrame.position.set( -0.06, -0.05, 0.02 )
+			}
+			hand.displayFrame.rotation.x = Math.PI / -2
+			hand.displayFrame.rotation.y = Math.PI
+
+			let displayString = handedness
+			if( hand.searchResults.length &&
+				hand.searchResults[ 0 ].pose ){
+
+				displayString += '\n'+ hand.searchResults[ 0 ].pose.names
+				.reduce( function( names, name, i ){
+
+					if( i ) names += ', '
+					return names += name
+
+				}, '' )
+				displayString +='\n@ '+ hand.searchResults[ 0 ].distance.toLocaleString() +'mm'
+			}
+			hand.displayFrame.print( displayString )
+		}
+
+
 	})
 
 

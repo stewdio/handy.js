@@ -2,7 +2,7 @@
 //  Copyright © 2017–2018, 2021 Stewart Smith. See LICENSE for details.
 
 
-import * as THREE from '../../Three/scripts/three.module.js'
+import * as THREE from 'three'
 // import settings   from './settings.js'
 // import player     from './player.js'
 // import three      from './three.js'

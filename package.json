@@ -1,0 +1,32 @@
+{
+  "name": "handy.js",
+  "version": "1.0.0",
+  "description": "Want to add hand pose recognition to your WebXR project? Handy makes defining and recognizing custom hand poses a snap! Why use hand-held controllers when you can use your bare hands? wave Built on Three.js and tested on the Oculus Quest, Handy recognizes over 100 hand poses right out of the box—including the American Sign Language (ASL) alphabet.",
+  "main": "./dist/Handy.js",
+  "module": "./src/Handy.js",
+  "scripts": {
+    "build-demo": "rollup scripts/main.js -c rollup.config.js --file scripts/main.min.esm.js",
+    "build": "npm run build-demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stewdio/handy.js.git"
+  },
+  "keywords": [
+    "WebXR",
+    "THREE.js"
+  ],
+  "author": "stewdio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stewdio/handy.js/issues"
+  },
+  "homepage": "https://github.com/stewdio/handy.js#readme",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "rollup": "^2.51.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "three": "^0.129.0"
+  }
+}
