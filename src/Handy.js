@@ -1,6 +1,4 @@
-
 //  Copyright © 2020–2021 Stewart Smith. See LICENSE for details.
-
 
 
 
@@ -16,16 +14,16 @@
 //
 //  Requires OculusBrowser/11.1.0.1.64 or later.
 
-
-
-
 import { poses as posesLeft  } from './Handy-poses-left.js'
 import { poses as posesRight } from './Handy-poses-right.js'
-import * as THREE from '../vendor/Three/scripts/three.module.js'
-import { SurfaceText } from '../vendor/Moar/scripts/SurfaceText.js'
-
-
-
+import {
+	Vector3,
+	MathUtils,
+	Object3D,
+	Mesh,
+	BoxBufferGeometry,
+	MeshBasicMaterial,
+} from 'three';
 
 const Handy = {
 
@@ -142,7 +140,7 @@ const Handy = {
 	//  so let’s just create it once
 	//  and reference it from here on.
 
-	VECTOR3_ZERO: new THREE.Vector3(),
+	VECTOR3_ZERO: new Vector3(),
 
 
 	//  Here’s the data goods;
@@ -236,41 +234,8 @@ const Handy = {
 		//  BECAUSE OF THE XR CAMERA RIG. COME BACK AND INVESTIGATE.
 
 		obj.camera = scene.children.find( function( child ){
-
-			return child.type = 'PerspectiveCamera'
+			return child.type === 'PerspectiveCamera'
 		})
-
-
-		//  Let’s create a means for displaying 
-		//  hand and finger data right in VR!
-		//  SurfaceText returns a THREE.Mesh
-		//  with additional methods like print().
-
-		obj.displayFrameAnchor = new THREE.Object3D()
-		obj.add( obj.displayFrameAnchor )
-		obj.displayFrame = new SurfaceText({
-
-			text: 'No data',
-			canvas: {
-
-				width:  512,
-				height: 128
-			},
-			virtual: {
-
-				width:  0.20,
-				height: 0.05
-			},
-			style: {
-
-				fontFamily: 'bold monospace',
-				fontSize:   '30px',
-				textAlign:  'center',
-				fillStyle:  '#00DDFF'
-			}
-		})
-		obj.displayFrameAnchor.add( obj.displayFrame )
-		obj.displayFrame.visible = true//false
 
 
 		//  Glob on the methods. No classes required :)
@@ -441,7 +406,7 @@ Object.assign( Handy.protos, {
 			fingerTip.quaternion &&
 			fingerProximal.quaternion ){
 
-			return THREE.MathUtils.radToDeg( 
+			return MathUtils.radToDeg( 
 
 				fingerProximal.quaternion.angleTo( fingerTip.quaternion )
 			)
@@ -672,16 +637,15 @@ Object.assign( Handy.protos, {
 
 		const
 		hand  = this,
-		handRoot = new THREE.Object3D(),
+		handRoot = new Object3D(),
 		size = 0.02
 
 		pose.jointPositions
 		.forEach( function( position ){
 
-			const box = new THREE.Mesh(
-
-				new THREE.BoxBufferGeometry( size, size, size ),
-				new THREE.MeshBasicMaterial()
+			const box = new Mesh(
+				new BoxBufferGeometry( size, size, size ),
+				new MeshBasicMaterial()
 			)
 			box.position.fromArray( position ).multiplyScalar( 0.001 )
 			if( matrix !== undefined ){
@@ -1183,61 +1147,6 @@ Object.assign( Handy.protos, {
 	update: function( callback ){
 
 		const hand = this
-
-
-		//  If we’re displaying hand pose + finger data 
-		// (angle˚, distance, isExtended, isContracted)
-		//  and there is existing joint data to use...
-
-		if( hand.displayFrame.visible === true && 
-			hand.joints[ 'wrist' ] &&
-			hand.joints[ 'wrist' ].position ){
-
-			const wrist = hand.joints[ 'wrist' ]
-			hand.displayFrameAnchor.position.copy( wrist.position )
-			hand.displayFrameAnchor.quaternion.copy( wrist.quaternion )
-
-
-			//  TO DO:
-			//  displayFrame should actually ORBIT the wrist at a fixed radius
-			//  and always choose the orbit degree that faces the camera.
-			
-			let handedness = hand.handedness
-			if( handedness === 'left' || handedness === 'right' ){
-
-				handedness = handedness.toUpperCase()
-			}
-			else {
-
-				handedness = 'UNKNOWN'
-			}
-			if( handedness === 'LEFT' ){
-
-				hand.displayFrame.position.set( 0.06, -0.05, 0.02 )
-			}
-			if( handedness === 'RIGHT' ){
-
-				hand.displayFrame.position.set( -0.06, -0.05, 0.02 )
-			}
-			hand.displayFrame.rotation.x = Math.PI / -2
-			hand.displayFrame.rotation.y = Math.PI
-
-			let displayString = handedness
-			if( hand.searchResults.length &&
-				hand.searchResults[ 0 ].pose ){
-
-				displayString += '\n'+ hand.searchResults[ 0 ].pose.names
-				.reduce( function( names, name, i ){
-
-					if( i ) names += ', '
-					return names += name
-
-				}, '' )
-				displayString +='\n@ '+ hand.searchResults[ 0 ].distance.toLocaleString() +'mm'
-			}
-			hand.displayFrame.print( displayString )
-		}
-
 
 		//  Do you believe in magic?
 
